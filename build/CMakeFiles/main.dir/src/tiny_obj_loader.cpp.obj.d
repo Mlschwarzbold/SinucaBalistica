@@ -1,6 +1,6 @@
 CMakeFiles/main.dir/src/tiny_obj_loader.cpp.obj: \
- C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\Laboratorio_4_Codigo_Fonte\src\tiny_obj_loader.cpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/tiny_obj_loader.h \
+ C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\SinucaBalistica\src\tiny_obj_loader.cpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/tiny_obj_loader.h \
  C:/msys64/mingw64/include/c++/13.1.0/map \
  C:/msys64/mingw64/include/c++/13.1.0/bits/requires_hosted.h \
  C:/msys64/mingw64/include/c++/13.1.0/x86_64-w64-mingw32/bits/c++config.h \

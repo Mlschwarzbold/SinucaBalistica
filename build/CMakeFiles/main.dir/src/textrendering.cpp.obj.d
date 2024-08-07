@@ -1,5 +1,5 @@
 CMakeFiles/main.dir/src/textrendering.cpp.obj: \
- C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\Laboratorio_4_Codigo_Fonte\src\textrendering.cpp \
+ C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\SinucaBalistica\src\textrendering.cpp \
  C:/msys64/mingw64/include/c++/13.1.0/string \
  C:/msys64/mingw64/include/c++/13.1.0/bits/requires_hosted.h \
  C:/msys64/mingw64/include/c++/13.1.0/x86_64-w64-mingw32/bits/c++config.h \
@@ -84,7 +84,7 @@ CMakeFiles/main.dir/src/textrendering.cpp.obj: \
  C:/msys64/mingw64/include/c++/13.1.0/bits/functional_hash.h \
  C:/msys64/mingw64/include/c++/13.1.0/bits/hash_bytes.h \
  C:/msys64/mingw64/include/c++/13.1.0/bits/basic_string.tcc \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glad/glad.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glad/glad.h \
  C:/msys64/mingw64/include/windows.h \
  C:/msys64/mingw64/include/sdkddkver.h C:/msys64/mingw64/include/excpt.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stdarg.h \
@@ -255,141 +255,141 @@ CMakeFiles/main.dir/src/textrendering.cpp.obj: \
  C:/msys64/mingw64/include/sec_api/stralign_s.h \
  C:/msys64/mingw64/include/winsvc.h C:/msys64/mingw64/include/mcx.h \
  C:/msys64/mingw64/include/imm.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/KHR/khrplatform.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/KHR/khrplatform.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stdint.h \
  C:/msys64/mingw64/include/stdint.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/GLFW/glfw3.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/mat4x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/matrix_double4x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/type_mat4x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/type_vec4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/qualifier.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/setup.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/GLFW/glfw3.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/mat4x4.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/matrix_double4x4.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/type_mat4x4.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/type_vec4.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/qualifier.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/setup.hpp \
  C:/msys64/mingw64/include/c++/13.1.0/cassert \
  C:/msys64/mingw64/include/assert.h \
  C:/msys64/mingw64/include/c++/13.1.0/cstddef \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../simd/platform.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../simd/platform.h \
  C:/msys64/mingw64/include/c++/13.1.0/cstdint \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/type_vec4.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/compute_vector_relational.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/type_vec4.inl \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/compute_vector_relational.hpp \
  C:/msys64/mingw64/include/c++/13.1.0/limits \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/type_mat4x4.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../matrix.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../detail/setup.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../vec2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_bool2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_vec2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_vec2.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_bool2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_float2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_float2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_double2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_double2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_int2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_int2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_uint2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_uint2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../vec3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_bool3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_vec3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_vec3.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_bool3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_float3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_float3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_double3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_double3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_int3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_int3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_uint3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_uint3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../vec4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_bool4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_bool4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_float4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_float4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_double4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_double4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/setup.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_int4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_int4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_uint4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/vector_uint4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat2x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double2x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat2x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat2x2.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double2x2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float2x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float2x2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat2x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double2x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat2x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat2x3.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double2x3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float2x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float2x3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat2x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double2x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat2x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat2x4.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double2x4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float2x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float2x4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat3x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double3x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat3x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat3x2.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double3x2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float3x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float3x2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat3x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double3x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat3x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat3x3.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double3x3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float3x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float3x3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat3x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double3x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat3x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat3x4.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double3x4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float3x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float3x4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat4x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double4x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat4x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat4x2.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double4x2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float4x2.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float4x2_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../mat4x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double4x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat4x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/../detail/type_mat4x3.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_double4x3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float4x3.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/.././ext/matrix_float4x3_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../detail/func_matrix.inl \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../detail/../geometric.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/../detail/../detail/../detail/func_geometric.inl \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/exponential.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/type_vec1.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/type_vec1.inl \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/type_mat4x4.inl \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../matrix.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../detail/setup.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../vec2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_bool2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec2.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_bool2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_float2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_float2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_double2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_double2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_uint2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_uint2_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../vec3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_bool3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec3.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_bool3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_float3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_float3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_double3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_double3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_uint3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_uint3_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../vec4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_bool4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_bool4_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_float4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_float4_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_double4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_double4_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/setup.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int4_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_uint4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_uint4_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat2x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double2x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x2.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double2x2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x2_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat2x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double2x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x3.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double2x3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x3_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat2x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double2x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x4.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double2x4_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x4_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat3x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double3x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat3x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat3x2.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double3x2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float3x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float3x2_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat3x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double3x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat3x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat3x3.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double3x3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float3x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float3x3_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat3x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double3x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat3x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat3x4.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double3x4_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float3x4.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float3x4_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat4x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double4x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat4x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat4x2.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double4x2_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float4x2.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float4x2_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../mat4x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double4x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat4x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat4x3.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double4x3_precision.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float4x3.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float4x3_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/../detail/../detail/func_matrix.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/geometric.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/func_geometric.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/exponential.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec1.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec1.inl \
  C:/msys64/mingw64/include/c++/13.1.0/cmath \
  C:/msys64/mingw64/include/math.h \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/func_exponential.inl \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/vector_relational.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/setup.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/func_vector_relational.inl \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/_vectorize.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/common.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/_fixes.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/func_common.inl \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/compute_common.hpp \
- C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include/glm/detail/setup.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/matrix_double4x4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/matrix_float4x4.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glm/./ext/matrix_float4x4_precision.hpp \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/utils.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/dejavufont.h
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/func_exponential.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/vector_relational.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/setup.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/func_vector_relational.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/_vectorize.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/common.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/_fixes.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/func_common.inl \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/compute_common.hpp \
+ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/setup.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/matrix_double4x4_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/matrix_float4x4.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/./ext/matrix_float4x4_precision.hpp \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/utils.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/dejavufont.h

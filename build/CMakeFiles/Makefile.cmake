@@ -28,7 +28,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Strawberry/c/share/cmake-3.26/Modules/Platform/Windows-windres.cmake"
   "C:/Strawberry/c/share/cmake-3.26/Modules/Platform/Windows.cmake"
   "C:/Strawberry/c/share/cmake-3.26/Modules/Platform/WindowsPaths.cmake"
-  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/CMakeLists.txt"
+  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/CMakeLists.txt"
   "CMakeFiles/3.26.4/CMakeCCompiler.cmake"
   "CMakeFiles/3.26.4/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.26.4/CMakeRCCompiler.cmake"

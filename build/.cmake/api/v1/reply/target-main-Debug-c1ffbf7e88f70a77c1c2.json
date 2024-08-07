@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/bin/Debug/main.exe"
+			"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/bin/Debug/main.exe"
 		},
 		{
-			"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/bin/Debug/main.pdb"
+			"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/bin/Debug/main.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -59,7 +59,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include"
+					"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include"
 				}
 			],
 			"language" : "CXX",
@@ -89,7 +89,7 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/include"
+					"path" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include"
 				}
 			],
 			"language" : "C",
@@ -114,7 +114,7 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "\"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\Laboratorio_4_Codigo_Fonte\\lib-mingw-64\\libglfw3.a\"",
+				"fragment" : "\"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\lib-mingw-64\\libglfw3.a\"",
 				"role" : "libraries"
 			},
 			{

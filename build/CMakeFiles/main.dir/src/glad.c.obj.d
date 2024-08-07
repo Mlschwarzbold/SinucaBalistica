@@ -1,5 +1,5 @@
 CMakeFiles/main.dir/src/glad.c.obj: \
- C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\Laboratorio_4_Codigo_Fonte\src\glad.c \
+ C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\SinucaBalistica\src\glad.c \
  C:/msys64/mingw64/include/stdio.h \
  C:/msys64/mingw64/include/corecrt_stdio_config.h \
  C:/msys64/mingw64/include/corecrt.h C:/msys64/mingw64/include/_mingw.h \
@@ -20,7 +20,7 @@ CMakeFiles/main.dir/src/glad.c.obj: \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/mm_malloc.h \
  C:/msys64/mingw64/include/errno.h C:/msys64/mingw64/include/string.h \
  C:/msys64/mingw64/include/sec_api/string_s.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/glad/glad.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glad/glad.h \
  C:/msys64/mingw64/include/windows.h \
  C:/msys64/mingw64/include/sdkddkver.h C:/msys64/mingw64/include/excpt.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stdarg.h \
@@ -189,6 +189,6 @@ CMakeFiles/main.dir/src/glad.c.obj: \
  C:/msys64/mingw64/include/sec_api/stralign_s.h \
  C:/msys64/mingw64/include/winsvc.h C:/msys64/mingw64/include/mcx.h \
  C:/msys64/mingw64/include/imm.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/LABORA~4/include/KHR/khrplatform.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/KHR/khrplatform.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/stdint.h \
  C:/msys64/mingw64/include/stdint.h C:/msys64/mingw64/include/inttypes.h

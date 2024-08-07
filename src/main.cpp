@@ -47,7 +47,7 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 #include "matrices.h"
-#include <format>
+
 // Estrutura que representa um modelo geométrico carregado a partir de um
 // arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
 struct ObjModel
@@ -213,12 +213,13 @@ class PhysicsObject {
     
 
     void reflectAxis(char axis){
+        float directional_loss = 0.6;
         if(axis == 'x'){
-            movement_vector.x = -movement_vector.x;
+            movement_vector.x = -movement_vector.x * directional_loss;
         } else if (axis == 'y'){
-            movement_vector.y = -movement_vector.y;
+            movement_vector.y = -movement_vector.y * directional_loss;
         }else if (axis == 'z'){
-            movement_vector.z = -movement_vector.z;
+            movement_vector.z = -movement_vector.z * directional_loss;
         } else{
             printf("Sintax error -> reflectAxis: axis doesnt exist");
         }
@@ -230,24 +231,30 @@ class PhysicsObject {
         movement_vector = new_movement_vector;
     }
 
-    void collideWithBounds(float xPlusBound, float xMinusBound, float zPlusBound, float zMinusBound){
+    void collideWithBounds(float xPlusBound, float xMinusBound, float zPlusBound, float zMinusBound, float yPlusBound, float yMinusBound){
         if(position.x + radius > xPlusBound){
+            position.x = position.x + (xPlusBound - position.x - radius);
             reflectAxis('x');
         }
         if(position.x - radius < xMinusBound){
+            position.x = position.x + (xMinusBound - position.x + radius);
             reflectAxis('x');
         }
         if(position.z + radius > zPlusBound){
+            position.z = position.z + (zPlusBound - position.z - radius);
             reflectAxis('z');
         }
         if(position.z - radius < zMinusBound){
+            position.z = position.z + (zMinusBound - position.z + radius);
             reflectAxis('z');
         }
 
-        if(position.y + radius > 0){
+        if(position.y + radius > yPlusBound){
+            position.y = position.y + (yPlusBound - position.y - radius);
             reflectAxis('y');
         }
-        if(position.y - radius < 2){
+        if(position.y - radius < yMinusBound){
+            position.y = position.y + (yMinusBound - position.y + radius);
             reflectAxis('y');
         }
     }
@@ -272,7 +279,7 @@ float ellapsed_time();
 // Collisions
 float t_colision_sphere_plane(PhysicsObject sphere, char axis, int direction, float offset);
 void collideSpheres(PhysicsObject * o1, PhysicsObject * o2);
-
+glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVecd, float * dist);
 
 
 //utility
@@ -487,6 +494,8 @@ int main(int argc, char* argv[])
     float xMinusBound = -2;
     float zPlusBound = 2;
     float zMinusBound = -2;
+    float yPlusBound = 20;
+    float yMinusBound = -0.2;
 
     
     std::list<PhysicsObject> PhysicsObjects;
@@ -501,11 +510,11 @@ int main(int argc, char* argv[])
     PhysicsObject ball = PhysicsObject("ball", 0.2f, 10, 0.3, 0.0, -0.4);
 
     /*
-    for(int j = 0; j < 10; j++){
-        for(int i = 0; i < 10; i++){
-            for(int k = 0; k < 10; k++){
+    for(int j = 0; j < 8; j++){
+        for(int i = 0; i < 8; i++){
+            for(int k = 0; k < 8; k++){
 
-                float r = 0.1f;
+                float r = 0.2f;
                 ball = PhysicsObject("ball", r, 1.0f, -0.7 + (i * (2 * r + 0.01f)), -0.3 + (k * (2 * r + 0.01f)), -0.7 + (j * (2 * r + 0.01f)));
                 ball.setMovementVector(0.0f, 0.0f, 0.00001f);
                 PhysicsObjects.push_back(ball);
@@ -708,7 +717,8 @@ int main(int argc, char* argv[])
 
 
 
-
+        glm::vec4 rayCastPoint;
+        float rayCastDist;
 
         // Displaying bound of table
         DrawSphereCoords(xPlusBound,0,zPlusBound,0.1f);
@@ -718,9 +728,10 @@ int main(int argc, char* argv[])
 
         for(PhysicsObject &object : PhysicsObjects){
             object.draw();
-            object.collideWithBounds(xPlusBound, xMinusBound, zPlusBound, zMinusBound);
+            object.collideWithBounds(xPlusBound, xMinusBound, zPlusBound, zMinusBound, yPlusBound, yMinusBound);
             object.advance_time(delta_t);
             object.applyStaticFriction(0.6 * delta_t);
+            object.movement_vector.y = object.movement_vector.y - 10.0f * delta_t;
         }
 
         //for each pair of objects
@@ -740,13 +751,41 @@ int main(int argc, char* argv[])
             }
         }
 
-        
+
+        // Makeshift crosshair
+        DrawSphere(camera_position_c + camera_view_vector * 0.2f, 0.001f);
+
         if(g_TapFlag){
             g_TapFlag = false;
-            PhysicsObjects.front().movement_vector = planarize(0.0f * PhysicsObjects.front().movement_vector + 6.0f * normalize(camera_view_vector));
+            
+            //PhysicsObjects.front().movement_vector = planarize(0.0f * PhysicsObjects.front().movement_vector + 6.0f * normalize(camera_view_vector));
+            
+            float min_dist = -1.0f;
+
+            glm::vec4 rayCastPointClosest;
+            PhysicsObject * rayCastSelectedObjectPointer;
+            for(PhysicsObject &object : PhysicsObjects){
+                rayCastPoint = p_collision_sphere_ray(object.position, object.radius, camera_position_c, camera_view_vector, &rayCastDist);
+                
+                if(rayCastDist < min_dist && (rayCastDist >= 0) || min_dist == -1.0f){
+                    min_dist = rayCastDist;       
+                    rayCastPointClosest = rayCastPoint;
+                    rayCastSelectedObjectPointer = &object;           
+                }
             }
 
+            printf("Max dist: %f\n", min_dist);
+            if(min_dist >= 0.0f){ // testa se o raycast encontrou algum objeto
+                printf("Max dist inside if: %f\n", min_dist);
+                DrawSphere(rayCastPointClosest, 0.03f);
+                glm::vec4 impactVector = -6.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
+                rayCastSelectedObjectPointer->movement_vector = planarize(0.5f * rayCastSelectedObjectPointer->movement_vector
+                                                                         + 0.4f * impactVector
+                                                                          + 0.6f * ((camera_view_vector)));
+            }
+        } 
 
+        
 
         /*
         if(distance(b1,b2) < b1.radius + b2.radius){
@@ -1972,13 +2011,15 @@ glm::vec4 getVectorBetween(PhysicsObject o1, PhysicsObject o2){
 glm::vec4 planarize(glm::vec4 v){
 
     glm::vec4 planar = v;
-    planar.y = 0.0f;
+    //planar.y = 0.0f;
     return planar;
 
 }
 
 void collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
-    if(distance(*o1, *o2) < (o1->radius + o2->radius)){
+
+    float inset = (o1->radius + o2->radius) - distance(*o1, *o2);
+    if(inset > 0){
         // Collision detected, now deal with new vectors
 
         //std::cout << "COLLLIIIIIIIIIIIIIIIISION" << std::endl;
@@ -2015,10 +2056,40 @@ void collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
         o1->movement_vector = new_v1;
         o2->movement_vector = new_v2;
 
-        o1->advance_time(0.001);
-        o2->advance_time(0.001);
+        //o1->advance_time(0.001);
+        //o2->advance_time(0.001);
+
+        glm::vec4 o1_out_vector = normalize(o1->position - o2->position);
+        o1->position = o1->position + o1_out_vector * (inset /2);
+        o2->position = o2->position + o1_out_vector * (- inset /2);
     } 
     return;
+}
+
+glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVec, float * dist){
+
+    glm::vec4 rayPosCentered = rayPos - spherePos;
+
+
+    float a = (pow(rayVec.x, 2) + pow(rayVec.y, 2) + pow(rayVec.z, 2));
+    float b = (2 * (rayPosCentered.x * rayVec.x + rayPosCentered.y * rayVec.y + rayPosCentered.z * rayVec.z));
+    float c = pow((rayPosCentered.x), 2) +  pow((rayPosCentered.y), 2) +  pow((rayPosCentered.z), 2)  - pow(radius,2);
+
+    float delta = pow(b, 2) - 4 * a * c;
+
+    float dt;
+    glm::vec4 contact;
+
+    if(delta >= 0){
+        dt = (-b - sqrt(delta)) / (2 *a);
+        contact = rayPos + rayVec * dt;
+    } else {
+        dt = -1;
+        contact = glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f);
+    }
+    
+    *dist = dt * norm(rayVec);
+    return contact;
 }
 
 

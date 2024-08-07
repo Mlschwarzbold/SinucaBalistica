@@ -1,26 +1,26 @@
 [
 {
-  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\main.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\Laboratorio_4_Codigo_Fonte\\src\\main.cpp\"",
-  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/src/main.cpp",
+  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\main.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\src\\main.cpp\"",
+  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/main.cpp",
   "output": "CMakeFiles/main.dir/src/main.cpp.obj"
 },
 {
-  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\textrendering.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\Laboratorio_4_Codigo_Fonte\\src\\textrendering.cpp\"",
-  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/src/textrendering.cpp",
+  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\textrendering.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\src\\textrendering.cpp\"",
+  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/textrendering.cpp",
   "output": "CMakeFiles/main.dir/src/textrendering.cpp.obj"
 },
 {
-  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\tiny_obj_loader.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\Laboratorio_4_Codigo_Fonte\\src\\tiny_obj_loader.cpp\"",
-  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/src/tiny_obj_loader.cpp",
+  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\tiny_obj_loader.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\src\\tiny_obj_loader.cpp\"",
+  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/tiny_obj_loader.cpp",
   "output": "CMakeFiles/main.dir/src/tiny_obj_loader.cpp.obj"
 },
 {
-  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build",
-  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/main.dir/includes_C.rsp -g -o CMakeFiles\\main.dir\\src\\glad.c.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\Laboratorio_4_Codigo_Fonte\\src\\glad.c\"",
-  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/src/glad.c",
+  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build",
+  "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/main.dir/includes_C.rsp -g -o CMakeFiles\\main.dir\\src\\glad.c.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\src\\glad.c\"",
+  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/glad.c",
   "output": "CMakeFiles/main.dir/src/glad.c.obj"
 }
 ]

@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/bin/Debug/main.exe"
-  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/bin/Debug/main.exe.manifest"
-  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/bin/Debug/main.pdb"
+  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/bin/Debug/main.exe"
+  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/bin/Debug/main.exe.manifest"
+  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/bin/Debug/main.pdb"
   "CMakeFiles/main.dir/src/glad.c.obj"
   "CMakeFiles/main.dir/src/glad.c.obj.d"
   "CMakeFiles/main.dir/src/main.cpp.obj"

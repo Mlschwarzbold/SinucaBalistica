@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build"
+			"value" : "c:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -575,7 +575,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build/CMakeFiles/pkgRedirects"
+			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -647,7 +647,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte"
+			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1327,7 +1327,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte/build"
+			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build"
 		},
 		{
 			"name" : "LAB_FCG_IS_TOP_LEVEL",
@@ -1351,7 +1351,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/Laboratorio_4_Codigo_Fonte"
+			"value" : "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica"
 		},
 		{
 			"name" : "_CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED",
