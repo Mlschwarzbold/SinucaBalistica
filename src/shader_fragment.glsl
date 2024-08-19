@@ -27,7 +27,7 @@ out vec4 color;
 void main()
 {
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
-    // sistema de coordenadas da câmera.
+    // sistema de coordenadas da câmera.    
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 camera_position = inverse(view) * origin;
     vec4 light_position = vec4(0.0, 2.0, 1.0, 1.0);

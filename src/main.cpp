@@ -197,6 +197,7 @@ glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 ra
 
 //utility
 float distance(PhysicsObject o1, PhysicsObject o2);
+float dist(glm::vec4 v1, glm::vec4 v2);
 glm::vec4 getVectorBetween(PhysicsObject o1, PhysicsObject o2);
 glm::vec4 planarize(glm::vec4 v);
 glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t);
@@ -266,6 +267,13 @@ class PhysicsObject {
         movement_vector = new_movement_vector;
     }
 
+
+    void collideNormal(glm::vec4 point, glm::vec4 vector){
+        glm::vec4 normal = normalize(vector);
+        
+        
+    }
+
     void collideWithBounds(float xPlusBound, float xMinusBound, float zPlusBound, float zMinusBound, float yPlusBound, float yMinusBound){
         if(position.x + radius > xPlusBound){
             position.x = position.x + (xPlusBound - position.x - radius);
@@ -288,10 +296,47 @@ class PhysicsObject {
             position.y = position.y + (yPlusBound - position.y - radius);
             reflectAxis('y');
         }
-        if(position.y - radius < yMinusBound){
+
+
+        // Floor collision
+        //if is in a hole, ignore regular floor collision
+
+        glm::vec4 hole_coords = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        float hole_width = 0.3f;
+
+        if(dist(planarize(position) , planarize(hole_coords)) < hole_width){
+            
+            if( dist(planarize(position) , planarize(hole_coords))< (hole_width - radius)){
+                printf("No collisions\n");
+            } else {
+                glm::vec4 dir = normalize( planarize(position) - planarize(hole_coords));
+                glm::vec4 contact = hole_coords + dir * hole_width;
+                if(position.y <= yMinusBound){
+                    contact.y = position.y;
+                } 
+                float offset = dist(position, contact) - radius;
+                if(offset <= 0){
+                    //Collision with hole edge
+                    position = position + dir * offset;
+                    reflectNormal(contact - position);
+                }
+                
+
+            }
+
+        } else if(position.y - radius < yMinusBound){
             position.y = position.y + (yMinusBound - position.y + radius);
             reflectAxis('y');
         }
+
+        float holeBottomY = yMinusBound - 2.0f;
+        if(position.y - radius < holeBottomY){
+            position.y = position.y + (holeBottomY - position.y + radius);
+            reflectAxis('y');
+        }
+
+
+        
     }
 
     void applyStaticFriction(float coef){
@@ -319,14 +364,10 @@ class PhysicsObject {
 
 class Rect {       
   public:             
-
-
     float x;
     float z;   
-
     float x_width;
     float z_width;
-
 
     Rect(float x, float z, float x_width, float z_width) { // Constructor with parameters
         x = x;
@@ -361,22 +402,26 @@ class Rect {
         float diff = rXPlus - XMinus;
         if(diff < 0){
             x = x + diff;
+            printf("x+: %f \n", diff);
         }
-
+    /*
         diff = rXMinus - XPlus;
         if(diff > 0){
             x = x - diff;
+            printf("x+: %f \n", diff);
         }
 
         diff = rZPlus - ZMinus;
         if(diff < 0){
             z = z + diff;
+            printf("z+: %f \n", diff);
         }
 
         diff = rZMinus - ZPlus;
         if(diff > 0){
             z = z - diff;
-        }
+            printf("z-: %f \n", diff);
+        }*/
     }
 
 };
@@ -551,9 +596,9 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
-    ObjModel tablemodel("../../data/PoolTableErgasia3.obj");
-    ComputeNormals(&tablemodel);
-    BuildTrianglesAndAddToVirtualScene(&tablemodel);
+    ObjModel gunmodel("../../data/Gun.obj");
+    ComputeNormals(&gunmodel);
+    BuildTrianglesAndAddToVirtualScene(&gunmodel);
 
     if ( argc > 1 )
     {
@@ -704,7 +749,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        printf("bezier: %f \n", cameraBezierT);
+        //printf("bezier: %f \n", cameraBezierT);
         
 
 
@@ -765,9 +810,10 @@ int main(int argc, char* argv[])
             g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * 3.0f * delta_t;
             }
 
-        playerRect.toRect(g_POV_Coords);
 
-        playerRect.collideWithRect(tableRect);
+        //playerRect.toRect(g_POV_Coords);
+
+        //playerRect.collideWithRect(tableRect);
 
         //g_POV_Coords = playerRect.toFirstPerson();
         
@@ -821,10 +867,10 @@ int main(int argc, char* argv[])
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
-        #define TABLE  4
+        #define GUN  4
 
         // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-1.0f,-3.0f,0.0f);
+        model = Matrix_Translate(0.0f, yMinusBound, 0.0f) * Matrix_Scale(0.3f,0.001f,0.3f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
         DrawVirtualObject("the_sphere");
@@ -838,14 +884,7 @@ int main(int argc, char* argv[])
         glUniform1i(g_object_id_uniform, BUNNY);
         DrawVirtualObject("the_bunny");
 
-        // Desenhamos o modelo do coelho
-        model = Matrix_Translate(-6.0f,0.0f,0.0f)
-              * Matrix_Rotate_Z(g_AngleZ)
-              * Matrix_Rotate_Y(g_AngleY)
-              * Matrix_Rotate_X(g_AngleX);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, TABLE);
-        DrawVirtualObject("Cube.002");
+
 
 
         // Desenhamos o modelo do chao
@@ -883,6 +922,16 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
+
+
+        //GUN
+        model = Matrix_Translate(-6.0f,0.0f,0.0f)
+              * Matrix_Rotate_Z(g_AngleZ)
+              * Matrix_Rotate_Y(g_AngleY)
+              * Matrix_Rotate_X(g_AngleX);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, GUN);
+        DrawVirtualObject("Gun.mtl");
 
         /*
         glm::vec4 posball = glm::vec4(2.0f,2.0f,-2.0f,1.0f);
@@ -2203,6 +2252,13 @@ float distance(PhysicsObject o1, PhysicsObject o2){
         return sqrt(pow((o1.position.x - o2.position.x), 2) + pow((o1.position.y - o2.position.y), 2) + pow((o1.position.z - o2.position.z), 2));
     }
     return -1;
+}
+
+float dist(glm::vec4 v1, glm::vec4 v2){
+
+
+    return sqrt(pow((v1.x - v2.x), 2) + pow((v1.y - v2.y), 2) + pow((v1.z - v2.z), 2));
+
 }
 
 
