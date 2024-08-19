@@ -160,6 +160,8 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 int global_Object_Index;
 int global_Text_Line;
 
+float g_encacapada_anim_speed = 1.0f;
+
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
 struct SceneObject
@@ -171,22 +173,49 @@ struct SceneObject
     GLuint       vertex_array_object_id; // ID do VAO onde estão armazenados os atributos do modelo
 };
 
+class PhysicsObject;
+class Rect;
 
 //DRAWING SPHERES
 void DrawSphere(glm::vec4 position, float radius);
 void DrawSphereCoords(int x, int y, int z, float radius);
 
 
+
+
+
+
+
+// Time
+float ellapsed_time();
+
+// Collisions
+float t_colision_sphere_plane(PhysicsObject sphere, char axis, int direction, float offset);
+void collideSpheres(PhysicsObject * o1, PhysicsObject * o2);
+glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVecd, float * dist);
+
+
+//utility
+float distance(PhysicsObject o1, PhysicsObject o2);
+glm::vec4 getVectorBetween(PhysicsObject o1, PhysicsObject o2);
+glm::vec4 planarize(glm::vec4 v);
+glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t);
+glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t);
+
 // Scene Objects
 // +obj ff3
 class PhysicsObject {       
   public:             
     int index;        
-    std::string type;
     float radius;  
     float mass;
+    float encacapada_animation_t;
+    std::string type;
     glm::vec4 position;
     glm::vec4 movement_vector;
+    glm::vec4 hole_coords;
+    glm::vec4 pre_encacapada_position;
+    
 
     PhysicsObject(std::string t, float r, float m, float x, float y, float z) { // Constructor with parameters
       index = global_Object_Index;
@@ -195,6 +224,7 @@ class PhysicsObject {
       radius = r;
       position = glm::vec4(x, y, z, 1.0f);
       mass = m;
+      encacapada_animation_t = -1;
     }
 
     void setMovementVector(float x, float y, float z){
@@ -206,7 +236,11 @@ class PhysicsObject {
     }
 
     void advance_time(float dt){
-        position = position + movement_vector * dt;
+        if( 0 /*encacapada_animation_t != -1 && encacapada_animation_t <= 1*/){
+            encacapada_animation_t = encacapada_animation_t + g_encacapada_anim_speed * dt;
+        } else {
+            position = position + movement_vector * dt;
+        }
 
     }
 
@@ -216,6 +250,7 @@ class PhysicsObject {
         float directional_loss = 0.6;
         if(axis == 'x'){
             movement_vector.x = -movement_vector.x * directional_loss;
+            //encacapar(glm::vec4(0.0f,0.0f,0.0f,1.0f));
         } else if (axis == 'y'){
             movement_vector.y = -movement_vector.y * directional_loss;
         }else if (axis == 'z'){
@@ -268,25 +303,83 @@ class PhysicsObject {
             movement_vector = movement_vector + friction_vector;
         }
     }
+
+    void encacapar(glm::vec4 hole_coords){
+        encacapada_animation_t = 0;
+        movement_vector = glm::vec4(0,0,0,0);
+        pre_encacapada_position = position;
+        hole_coords = hole_coords;
+    }
+
+    void play_encacapa_animation(){
+        position = Bezier(pre_encacapada_position, pre_encacapada_position + movement_vector, hole_coords + glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), hole_coords, encacapada_animation_t);
+    }
 };
 
 
+class Rect {       
+  public:             
 
 
-// Time
-float ellapsed_time();
+    float x;
+    float z;   
 
-// Collisions
-float t_colision_sphere_plane(PhysicsObject sphere, char axis, int direction, float offset);
-void collideSpheres(PhysicsObject * o1, PhysicsObject * o2);
-glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVecd, float * dist);
+    float x_width;
+    float z_width;
 
 
-//utility
-float distance(PhysicsObject o1, PhysicsObject o2);
-glm::vec4 getVectorBetween(PhysicsObject o1, PhysicsObject o2);
-glm::vec4 planarize(glm::vec4 v);
+    Rect(float x, float z, float x_width, float z_width) { // Constructor with parameters
+        x = x;
+        z = z;
+        x_width = x_width;
+        z_width = z_width;
 
+    }
+
+    glm::vec4 toFirstPerson(){
+        return glm::vec4(x, 1.0f, z, 1.0f);
+    }
+
+    void toRect(glm::vec4 pos){
+        x = pos.x;
+        z = pos.z;
+    }
+
+
+    void collideWithRect(Rect rect){
+        float XPlus = x + x_width;
+        float XMinus = x - x_width;
+        float ZPlus = z + z_width;
+        float ZMinus = z - z_width;
+
+
+        float rXPlus = rect.x + rect.x_width;
+        float rXMinus = rect.x - rect.x_width;
+        float rZPlus = rect.z + rect.z_width;
+        float rZMinus = rect.z - rect.z_width;
+
+        float diff = rXPlus - XMinus;
+        if(diff < 0){
+            x = x + diff;
+        }
+
+        diff = rXMinus - XPlus;
+        if(diff > 0){
+            x = x - diff;
+        }
+
+        diff = rZPlus - ZMinus;
+        if(diff < 0){
+            z = z + diff;
+        }
+
+        diff = rZMinus - ZPlus;
+        if(diff > 0){
+            z = z - diff;
+        }
+    }
+
+};
 
 
 
@@ -325,11 +418,27 @@ bool g_FreeCamera = false;
 // usuário através do mouse (veja função CursorPosCallback()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
+glm::vec4 g_LookAt_Coords;
+glm::vec4 g_Camera_LookAt;
 float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 3.5f; // Distância da câmera para a origem
 
-glm::vec4 g_POV_Coords = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+glm::vec4 g_POV_Coords = glm::vec4(3.0f, 1.0f, 3.0f, 1.0f);
+glm::vec4 g_POV_LookAt;
+float g_free_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
+float g_free_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
+
+glm::vec4 g_FinalCameraCoords;
+glm::vec4 g_FinalCameraLookAtCoords;
+
+float cameraBezierT = 0;
+
+
+
+Rect playerRect = Rect(-3.0f, 0.0f, 0.3f, 0.3f);
+
+Rect tableRect = Rect(0.0f, 0.0f, 2.0f, 2.0f);
 
 // Variáveis que controlam rotação do antebraço
 float g_ForearmAngleZ = 0.0f;
@@ -442,6 +551,10 @@ int main(int argc, char* argv[])
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
+    ObjModel tablemodel("../../data/PoolTableErgasia3.obj");
+    ComputeNormals(&tablemodel);
+    BuildTrianglesAndAddToVirtualScene(&tablemodel);
+
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
@@ -496,6 +609,12 @@ int main(int argc, char* argv[])
     float zMinusBound = -2;
     float yPlusBound = 20;
     float yMinusBound = -0.2;
+
+
+    float tableXPlus = 2.0f;
+    float tableXMinus = -2.0f;
+    float tableZPlus = 2.0f;
+    float tableZMinus = -2.0f;
 
     
     std::list<PhysicsObject> PhysicsObjects;
@@ -559,22 +678,66 @@ int main(int argc, char* argv[])
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
         // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
         // e ScrollCallback().
+
+
+//==========================================================================||
+//||                                                                        ||
+//||                  Camera code                                  ff4      ||
+//||                                                               +cam     ||
+//==========================================================================||
+
+
+        
+
+
+        if(!g_FreeCamera){
+            if(cameraBezierT < 1){
+                cameraBezierT = cameraBezierT + delta_t;
+            } else {
+                cameraBezierT = 1;
+            }
+        } else {
+            if(cameraBezierT > 0){
+                cameraBezierT = cameraBezierT - delta_t;
+            } else {
+                cameraBezierT = 0;
+            }
+        }
+
+        printf("bezier: %f \n", cameraBezierT);
+        
+
+
         float r = g_CameraDistance;
         float y = r*sin(g_CameraPhi);
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
+
+        g_POV_LookAt = g_POV_Coords + glm::vec4(cos(-g_free_CameraTheta)*cos(g_free_CameraPhi), -sin(g_free_CameraPhi), sin(-g_free_CameraTheta)*cos(g_free_CameraPhi),0.0f);
+        g_LookAt_Coords = glm::vec4(x,y,z,1.0f);
+        g_Camera_LookAt = PhysicsObjects.front().position; 
+
+        g_FinalCameraCoords = Bezier(g_POV_Coords, g_POV_Coords + glm::vec4(0.0f,1.0f,0.0f,0.0f), g_LookAt_Coords +  glm::vec4(0.0f,1.0f,0.0f,0.0f), g_LookAt_Coords ,cameraBezierT);
+        g_FinalCameraLookAtCoords = Bezier(g_POV_LookAt, g_POV_LookAt, g_Camera_LookAt, g_Camera_LookAt, cameraBezierT);
+
         // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
         // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
         glm::vec4 camera_position_c;
         glm::vec4 camera_lookat_l;
-        if(g_FreeCamera){
-            camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-            camera_lookat_l    = PhysicsObjects.front().position; 
+
+
+        camera_position_c  = g_FinalCameraCoords;
+        camera_lookat_l    = g_FinalCameraLookAtCoords;
+        /*
+        if(!g_FreeCamera){
+            //camera_position_c  = g_LookAt_Coords;
+            //camera_lookat_l    = g_Camera_LookAt;
+            
         } else {
             camera_position_c  = g_POV_Coords; // Ponto "c", centro da câmera
-            camera_lookat_l    = camera_position_c + glm::vec4(cos(-g_CameraTheta)*cos(g_CameraPhi), -sin(g_CameraPhi), sin(-g_CameraTheta)*cos(g_CameraPhi),0.0f);
-        }
+            camera_lookat_l    = g_POV_LookAt;
+        }*/
 
         
         
@@ -601,7 +764,17 @@ int main(int argc, char* argv[])
         if(d_held){
             g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * 3.0f * delta_t;
             }
+
+        playerRect.toRect(g_POV_Coords);
+
+        playerRect.collideWithRect(tableRect);
+
+        //g_POV_Coords = playerRect.toFirstPerson();
         
+
+        // Player-table COllision
+
+        //CollideRects(PhysicsObject rect1, PhysicsObject rect1);
 
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
@@ -648,6 +821,7 @@ int main(int argc, char* argv[])
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
+        #define TABLE  4
 
         // Desenhamos o modelo da esfera
         model = Matrix_Translate(-1.0f,-3.0f,0.0f);
@@ -663,6 +837,16 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BUNNY);
         DrawVirtualObject("the_bunny");
+
+        // Desenhamos o modelo do coelho
+        model = Matrix_Translate(-6.0f,0.0f,0.0f)
+              * Matrix_Rotate_Z(g_AngleZ)
+              * Matrix_Rotate_Y(g_AngleY)
+              * Matrix_Rotate_X(g_AngleX);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, TABLE);
+        DrawVirtualObject("Cube.002");
+
 
         // Desenhamos o modelo do chao
         model = Matrix_Translate(.0f,-0.2f,0.0f)
@@ -778,8 +962,8 @@ int main(int argc, char* argv[])
             if(min_dist >= 0.0f){ // testa se o raycast encontrou algum objeto
                 printf("Max dist inside if: %f\n", min_dist);
                 DrawSphere(rayCastPointClosest, 0.03f);
-                glm::vec4 impactVector = -6.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
-                rayCastSelectedObjectPointer->movement_vector = planarize(0.5f * rayCastSelectedObjectPointer->movement_vector
+                glm::vec4 impactVector = -10.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
+                rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
                                                                          + 0.4f * impactVector
                                                                           + 0.6f * ((camera_view_vector)));
             }
@@ -1389,19 +1573,19 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     // parâmetros que definem a posição da câmera dentro da cena virtual.
     // Assim, temos que o usuário consegue controlar a câmera.
 
-    if (g_LeftMouseButtonPressed)
+    // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+    float dx = xpos - g_LastCursorPosX;
+    float dy = ypos - g_LastCursorPosY;
+
+    // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+    float phimax = 3.141592f/2;
+    float phimin = -phimax;
+    if (!g_FreeCamera)
     {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
-    
+
         // Atualizamos parâmetros da câmera com os deslocamentos
         g_CameraTheta -= 0.01f*dx;
         g_CameraPhi   += 0.01f*dy;
-    
-        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = 3.141592f/2;
-        float phimin = -phimax;
     
         if (g_CameraPhi > phimax)
             g_CameraPhi = phimax;
@@ -1409,11 +1593,27 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         if (g_CameraPhi < phimin)
             g_CameraPhi = phimin;
     
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
+
+    } else {
+
+    
+        // Atualizamos parâmetros da câmera com os deslocamentos
+        g_free_CameraTheta -= 0.01f*dx;
+        g_free_CameraPhi   += 0.01f*dy;
+    
+        if (g_free_CameraPhi > phimax)
+            g_free_CameraPhi = phimax;
+    
+        if (g_free_CameraPhi < phimin)
+            g_free_CameraPhi = phimin;
+
+
     }
+
+    // Atualizamos as variáveis globais para armazenar a posição atual do
+    // cursor como sendo a última posição conhecida do cursor.
+    g_LastCursorPosX = xpos;
+    g_LastCursorPosY = ypos;
 
     if (g_RightMouseButtonPressed)
     {
@@ -1548,6 +1748,9 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_F && action == GLFW_PRESS)
     {
         g_FreeCamera = !g_FreeCamera;
+        
+        //cameraBezierT = 0;
+    
     }
 
     // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
@@ -2011,7 +2214,7 @@ glm::vec4 getVectorBetween(PhysicsObject o1, PhysicsObject o2){
 glm::vec4 planarize(glm::vec4 v){
 
     glm::vec4 planar = v;
-    //planar.y = 0.0f;
+    planar.y = 0.0f;
     return planar;
 
 }
@@ -2092,6 +2295,30 @@ glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 ra
     return contact;
 }
 
+glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t){
+
+    float x = p1.x * (1 - t) + p2.x * t;
+    float y = p1.y * (1 - t) + p2.y * t;
+    float z = p1.z * (1 - t) + p2.z * t;
+    float type = p1.w;
+
+    return glm::vec4(x, y, z, type);
+
+}   
+
+glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t){
+
+    glm::vec4 a = LERP(p1, p2, t);
+    glm::vec4 b = LERP(p2, p3, t);
+    glm::vec4 c = LERP(p3, p4, t);
+
+    glm::vec4 d = LERP(a, b, t);
+    glm::vec4 e = LERP(b, c, t);
+
+    glm::vec4 f = LERP(d, e, t);
+
+    return f;
+}
 
 // set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
 // vim: set spell spelllang=pt_br :
