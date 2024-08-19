@@ -113,8 +113,8 @@ void main()
         Ka = vec3(0.0,0.0,0.0);
         q = 1.0;
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
-        //U = texcoords.x;
-        //V = texcoords.y;
+        U = texcoords.x;
+        V = texcoords.y;
     }
     else // Objeto desconhecido = preto
     {
@@ -152,12 +152,12 @@ void main()
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
     
-    if(dot(normalize(p-light_position), normalize(light_vector)) < cos(3.14 / (360 / (2 * abertura)))){
+    if (object_id == PLANE){
+        color.rgb = Kd0 * (lambert + 0.01);
+    } 
+    else if(dot(normalize(p-light_position), normalize(light_vector)) < cos(3.14 / (360 / (2 * abertura)))){
         color.rgb = ambient_term;
     } 
-    //else if (object_id == PLANE)
-    //    color.rgb = Kd0 * (lambert + 0.01);
-    //} 
     else {
         color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
     }

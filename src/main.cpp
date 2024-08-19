@@ -593,7 +593,7 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/green_fabric diffuse.jpg");      // TextureImage0
+    LoadTextureImage("../../data/green_fabric_diffuse.jpg");      // TextureImage0
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel spheremodel("../../data/sphere.obj");
