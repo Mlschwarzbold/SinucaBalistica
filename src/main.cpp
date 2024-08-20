@@ -247,9 +247,11 @@ glm::vec4 g_FinalCameraCoords;
 glm::vec4 g_FinalCameraLookAtCoords;
 
 float cameraBezierT = 0;
-float g_ball_radius = 0.05f;
-float hole_width = 0.08f;
+float g_ball_radius = 0.03f;
+float hole_width = 0.09f;
 
+// vars
+float g_recoilAnim = 0;
 
 
 
@@ -275,6 +277,7 @@ float dist(glm::vec4 v1, glm::vec4 v2);
 glm::vec4 getVectorBetween(PhysicsObject o1, PhysicsObject o2);
 glm::vec4 planarize(glm::vec4 v);
 glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t);
+float LERP(float f1, float f2, float t);
 glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t);
 
 
@@ -373,61 +376,43 @@ class PhysicsObject {
             position.y = position.y + (yPlusBound - position.y - radius);
             reflectAxis('y');
         }
+       
+    }
 
+    void collideWithFloor(float tableHeight){
 
         // Floor collision
         //if is in a hole, ignore regular floor collision
+        //bool inHole = collideWithHole();
 
-        glm::vec4 hole_coords = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
         
-
-        if(dist(planarize(position) , planarize(hole_coords)) < hole_width){
-            
-            if( dist(planarize(position) , planarize(hole_coords))< (hole_width - radius)){
-                printf("No collisions\n");
-            } else {
-                glm::vec4 dir = normalize( planarize(position) - planarize(hole_coords));
-                glm::vec4 contact = hole_coords + dir * hole_width;
-                if(position.y <= yMinusBound){
-                    contact.y = position.y;
-                } 
-                float offset = dist(position, contact) - radius;
-                if(offset <= 0){
-                    //Collision with hole edge
-                    position = position + dir * offset;
-                    reflectNormal(contact - position);
-                }
-                
-
-            }
-
-        } else if(position.y - radius < yMinusBound){
-            position.y = position.y + (yMinusBound - position.y + radius);
+        if((position.y - radius < tableHeight)){
+            position.y = position.y + (tableHeight - position.y + radius);
             reflectAxis('y');
         }
 
-        float holeBottomY = yMinusBound - 2.0f;
+    }
+
+    
+    bool collideWithHole(glm::vec4 hole, float tableHeight){
+
+        // Collide with the bottom of the hole
+        float holeBottomY = tableHeight - 0.5f;
         if(position.y - radius < holeBottomY){
             position.y = position.y + (holeBottomY - position.y + radius);
             reflectAxis('y');
         }
 
-
-        
-    }
-
-    /*
-    bool collideWithHole(glm::vec4 hole){
-
         if(dist(planarize(position) , planarize(hole)) < hole_width){
 
             
             if( dist(planarize(position) , planarize(hole))< (hole_width - radius)){
-                printf("No collisions\n");
+                //printf("No collisions\n");
             } else {
                 glm::vec4 dir = normalize( planarize(position) - planarize(hole));
                 glm::vec4 contact = hole + dir * hole_width;
-                if(position.y <= yMinusBound){
+                if(position.y <= tableHeight){
                     contact.y = position.y;
                 } 
                 float offset = dist(position, contact) - radius;
@@ -439,20 +424,16 @@ class PhysicsObject {
                 
 
             }
-
+            printf("Ball inside hole\n");
             return true;
         } else {
             // Not touching hole
             return false;
         }
 
-        float holeBottomY = 0.6f;
-        if(position.y - radius < holeBottomY){
-            position.y = position.y + (holeBottomY - position.y + radius);
-            reflectAxis('y');
-        }
+        
 
-    }*/
+    }
 
     void applyStaticFriction(float coef){
         glm::vec4 friction_vector = -normalize(movement_vector) * coef;
@@ -813,16 +794,18 @@ int main(int argc, char* argv[])
         //printf("bezier: %f \n", cameraBezierT);
         
 
+        
+        g_Camera_LookAt = PhysicsObjects.front().position; 
 
         float r = g_CameraDistance;
-        float y = r*sin(g_CameraPhi);
-        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
-        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
+        float y = g_Camera_LookAt.y + r*sin(g_CameraPhi);
+        float z = g_Camera_LookAt.z + r*cos(g_CameraPhi)*cos(g_CameraTheta);
+        float x = g_Camera_LookAt.x + r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
+        g_LookAt_Coords = glm::vec4(x,y,z,1.0f);
 
         g_POV_LookAt = g_POV_Coords + glm::vec4(cos(-g_free_CameraTheta)*cos(g_free_CameraPhi), -sin(g_free_CameraPhi), sin(-g_free_CameraTheta)*cos(g_free_CameraPhi),0.0f);
-        g_LookAt_Coords = glm::vec4(x,y,z,1.0f);
-        g_Camera_LookAt = PhysicsObjects.front().position; 
+        
 
         g_FinalCameraCoords = Bezier(g_POV_Coords, g_POV_Coords + glm::vec4(0.0f,1.0f,0.0f,0.0f), g_LookAt_Coords +  glm::vec4(0.0f,1.0f,0.0f,0.0f), g_LookAt_Coords ,cameraBezierT);
         g_FinalCameraLookAtCoords = Bezier(g_POV_LookAt, g_POV_LookAt, g_Camera_LookAt, g_Camera_LookAt, cameraBezierT);
@@ -886,7 +869,7 @@ int main(int argc, char* argv[])
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = 3.141592 / 3.0f;
+            float field_of_view = (3.141592 / 3.0f); // / LERP(r, 1, cameraBezierT);
             projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
         }
         else
@@ -911,12 +894,13 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-        #define UNKNOWN -2
+        
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
         #define GUN 3
         #define TABLE_TOP 4
+        #define UNKNOWN -2
 
 
         // Desenhamos o modelo da esfera
@@ -942,12 +926,7 @@ int main(int argc, char* argv[])
         //DrawVirtualObject("the_plane");
 
 
-        // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,1.1f,0.0f) * Matrix_Scale(0.1f, 0.1f, 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, GUN);
-       // DrawVirtualObject("P88");
-
+        
 
 
         // Desenhamos A mesa
@@ -1028,7 +1007,19 @@ int main(int argc, char* argv[])
 
         for(PhysicsObject &object : PhysicsObjects){
             object.draw();
-            object.collideWithBounds(xPlusBound, xMinusBound, zPlusBound, zMinusBound, yPlusBound, yMinusBound);
+            
+            bool inHole = false;
+            if(object.index != 0) for(glm::vec4 hole : Holes){
+                // or ( inHole, collideWithHoles)
+                // returs tru if it is in currently tested hole
+                // of if one of the previous tests was true]
+                
+                inHole = object.collideWithHole(hole, yMinusBound) || inHole;
+            }
+            if(!inHole){
+                object.collideWithBounds(xPlusBound, xMinusBound, zPlusBound, zMinusBound, yPlusBound, yMinusBound);
+                object.collideWithFloor(yMinusBound);
+            }
             object.advance_time(delta_t);
             object.applyStaticFriction(0.6 * delta_t);
             object.movement_vector.y = object.movement_vector.y - 10.0f * delta_t;
@@ -1052,9 +1043,29 @@ int main(int argc, char* argv[])
         }
 
         // DRAW THE HOLES
+        /*
         for(glm::vec4 hole : Holes){
             DrawSphere(hole, hole_width);
         }
+        */
+
+       // Desenhamos o plano do chão
+        model = Matrix_Translate(g_POV_Coords.x, g_POV_Coords.y, g_POV_Coords.z)
+        * Matrix_Rotate_X(0.0f)
+        * Matrix_Rotate_Y(g_free_CameraTheta + (3.14))
+        * Matrix_Rotate_Z(g_free_CameraPhi + -LERP(0, (3.14 / 5),g_recoilAnim))
+        * Matrix_Translate(-0.15f,-0.2f,0.-0.1f)
+        * Matrix_Scale(0.01f, 0.01f, 0.01f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, GUN);
+        DrawVirtualObject("P88");
+
+        if(g_recoilAnim > 0){
+            g_recoilAnim = g_recoilAnim - 3 * delta_t;
+        } else {
+            g_recoilAnim = 0;
+        }
+
 
 
         // Makeshift crosshair
@@ -1062,6 +1073,7 @@ int main(int argc, char* argv[])
 
         if(g_TapFlag){
             g_TapFlag = false;
+            g_recoilAnim = 1;
             
             //PhysicsObjects.front().movement_vector = planarize(0.0f * PhysicsObjects.front().movement_vector + 6.0f * normalize(camera_view_vector));
             
@@ -1083,7 +1095,7 @@ int main(int argc, char* argv[])
             if(min_dist >= 0.0f){ // testa se o raycast encontrou algum objeto
                 printf("Max dist inside if: %f\n", min_dist);
                 DrawSphere(rayCastPointClosest, 0.03f);
-                glm::vec4 impactVector = -10.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
+                glm::vec4 impactVector = -5.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
                                                                          + 0.4f * impactVector
                                                                           + 0.6f * ((camera_view_vector)));
@@ -2469,6 +2481,13 @@ glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t){
     float type = p1.w;
 
     return glm::vec4(x, y, z, type);
+
+} 
+
+float LERP(float f1, float f2, float t){
+
+    float x = f1 * (1 - t) + f2 * t;
+    return x;
 
 }   
 
