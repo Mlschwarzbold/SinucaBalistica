@@ -225,7 +225,7 @@ class Rect;
 
 
 // new global variables
-int global_Object_Index;
+int global_Object_Index = 0;
 int global_Text_Line;
 
 float g_encacapada_anim_speed = 1.0f;
@@ -255,12 +255,12 @@ float g_recoilAnim = 0;
 
 
 
-bool w_held, a_held, s_held, d_held = false;
+bool w_held, a_held, s_held, d_held, shift_held, ctrl_held = false;
 
 //New functions
 
 //DRAWING SPHERES
-void DrawSphere(glm::vec4 position, float radius);
+void DrawSphere(glm::vec4 position, float radius, int index);
 void DrawSphereCoords(int x, int y, int z, float radius);
 // Time
 float ellapsed_time();
@@ -313,7 +313,7 @@ class PhysicsObject {
     }
 
     void draw(){
-        DrawSphere(position, radius);
+        DrawSphere(position, radius, index);
     }
 
     void advance_time(float dt){
@@ -608,19 +608,36 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/metal_texture.jpg"); // TextureImage2:
     LoadTextureImage("../../data/textures/pool table low_POOL TABLE_BaseColor.png"); // TextureImage3:
     LoadTextureImage("../../data/textures/tex_u1_v1.jpg"); // TextureImage4:
+    LoadTextureImage("../../data/textures/balls/BallCue.jpg"); // TextureCueBall:
+    LoadTextureImage("../../data/textures/balls/Ball1.jpg"); // TextureBall1:
+    LoadTextureImage("../../data/textures/balls/Ball2.jpg"); // TextureBall2:
+    LoadTextureImage("../../data/textures/balls/Ball3.jpg"); // TextureBall3:
+    LoadTextureImage("../../data/textures/balls/Ball4.jpg"); // TextureBall4:
+    LoadTextureImage("../../data/textures/balls/Ball5.jpg"); // TextureBall5:
+    LoadTextureImage("../../data/textures/balls/Ball6.jpg"); // TextureBall6:
+    LoadTextureImage("../../data/textures/balls/Ball7.jpg"); // TextureBall7:
+    LoadTextureImage("../../data/textures/balls/Ball8.jpg"); // TextureBall8:
+    LoadTextureImage("../../data/textures/balls/Ball9.jpg"); // TextureBall9:
+    LoadTextureImage("../../data/textures/balls/Ball10.jpg"); // TextureBall10:
+    LoadTextureImage("../../data/textures/balls/Ball11.jpg"); // TextureBall11:
+    LoadTextureImage("../../data/textures/balls/Ball12.jpg"); // TextureBall12:
+    LoadTextureImage("../../data/textures/balls/Ball13.jpg"); // TextureBall13:
+    LoadTextureImage("../../data/textures/balls/Ball14.jpg"); // TextureBall14:
+    LoadTextureImage("../../data/textures/balls/Ball15.jpg"); // TextureBall15:
+
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel spheremodel("../../data/sphere.obj");
+    ObjModel spheremodel("../../data/ball7.obj");
     ComputeNormals(&spheremodel);
     BuildTrianglesAndAddToVirtualScene(&spheremodel);
 
-    ObjModel bunnymodel("../../data/bunny.obj");
+    /*ObjModel bunnymodel("../../data/bunny.obj");
     ComputeNormals(&bunnymodel);
     BuildTrianglesAndAddToVirtualScene(&bunnymodel);
 
     ObjModel planemodel("../../data/plane.obj");
     ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel);*/
 
     ObjModel gunmodel("../../data/Gun.obj");
     ComputeNormals(&gunmodel);
@@ -716,6 +733,7 @@ int main(int argc, char* argv[])
     PhysicsObjects.push_back(b4);
     PhysicsObjects.push_back(b5);
     PhysicsObjects.push_back(b6);
+    PhysicsObjects.push_back(b7);
     
     
     PhysicsObject ball = PhysicsObject("ball", 0.2f, 10, 0.3, 0.0, -0.4);
@@ -842,16 +860,22 @@ int main(int argc, char* argv[])
         glm::vec4 camera_horizontal_normalized = normalize(camera_horizontal_forward_vector);
 
         if(w_held){
-            g_POV_Coords = g_POV_Coords + camera_horizontal_normalized * 3.0f * delta_t;
+            g_POV_Coords = g_POV_Coords + camera_horizontal_normalized * 2.0f * delta_t;
             }
         if(s_held){
-            g_POV_Coords = g_POV_Coords - camera_horizontal_normalized * 3.0f * delta_t;
+            g_POV_Coords = g_POV_Coords - camera_horizontal_normalized * 2.0f * delta_t;
             }
         if(a_held){
-            g_POV_Coords = g_POV_Coords - camera_side_vector_normalized * 3.0f * delta_t;
+            g_POV_Coords = g_POV_Coords - camera_side_vector_normalized * 1.5f * delta_t;
             }
         if(d_held){
-            g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * 3.0f * delta_t;
+            g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * 1.5f * delta_t;
+            }
+        if(shift_held){
+            g_POV_Coords = g_POV_Coords + camera_up_vector * 1.5f * delta_t;
+            }
+        if(ctrl_held){
+            g_POV_Coords = g_POV_Coords - camera_up_vector * 1.5f * delta_t;
             }
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -896,15 +920,15 @@ int main(int argc, char* argv[])
 
         
         #define SPHERE 0
-        #define BUNNY  1
-        #define PLANE  2
+        //#define BUNNY  1
+        //#define PLANE  2
         #define GUN 3
         #define TABLE_TOP 4
         #define UNKNOWN -2
 
 
         // Desenhamos o modelo da esfera
-        model = Matrix_Translate(-1.0f,0.0f,0.0f)
+        /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
               * Matrix_Rotate_Z(0.6f)
               * Matrix_Rotate_X(0.2f)
               * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
@@ -923,7 +947,7 @@ int main(int argc, char* argv[])
         model = Matrix_Translate(0.0f,-1.1f,0.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
-        //DrawVirtualObject("the_plane");
+        //DrawVirtualObject("the_plane");*/
 
 
         
@@ -1069,7 +1093,7 @@ int main(int argc, char* argv[])
 
 
         // Makeshift crosshair
-        DrawSphere(camera_position_c + camera_view_vector * 0.2f, 0.001f);
+        DrawSphere(camera_position_c + camera_view_vector * 0.2f, 0.001f, 0);
 
         if(g_TapFlag){
             g_TapFlag = false;
@@ -1094,7 +1118,7 @@ int main(int argc, char* argv[])
             printf("Max dist: %f\n", min_dist);
             if(min_dist >= 0.0f){ // testa se o raycast encontrou algum objeto
                 printf("Max dist inside if: %f\n", min_dist);
-                DrawSphere(rayCastPointClosest, 0.03f);
+                DrawSphere(rayCastPointClosest, 0.03f, 0);
                 glm::vec4 impactVector = -5.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
                                                                          + 0.4f * impactVector
@@ -1317,6 +1341,22 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureCueBall"), 5);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall1"), 6);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall2"), 7);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall3"), 8);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall4"), 9);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall5"), 10);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall6"), 11);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall7"), 12);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall8"), 13);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall9"), 14);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall10"), 15);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall11"), 16);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall12"), 17);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall13"), 18);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall14"), 19);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall15"), 20);
     glUseProgram(0);
 }
 
@@ -1983,6 +2023,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     {
         d_held = true;
     }
+    if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_PRESS)
+    {
+        shift_held = true;
+    }
+    if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
+    {
+        ctrl_held = true;
+    }
     //release
     if (key == GLFW_KEY_W && action == GLFW_RELEASE)
     {
@@ -1999,6 +2047,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_D && action == GLFW_RELEASE)
     {
         d_held = false;
+    }
+    if (key == GLFW_KEY_LEFT_SHIFT && action == GLFW_RELEASE)
+    {
+        shift_held = false;
+    }
+    if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_RELEASE)
+    {
+        ctrl_held = false;
     }
 }
 
@@ -2305,12 +2361,12 @@ void PrintObjModelInfo(ObjModel* model)
   }
 }
 
-void DrawSphere(glm::vec4 position, float radius){
+void DrawSphere(glm::vec4 position, float radius, int index){
     glm::mat4 model = Matrix_Translate(position.x, position.y, position.z) 
         * Matrix_Scale(radius, radius, radius);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-    glUniform1i(g_object_id_uniform, SPHERE);
-    DrawVirtualObject("the_sphere");
+    glUniform1i(g_object_id_uniform, index + 10);
+    DrawVirtualObject("ball7");
 
 }
 
@@ -2319,7 +2375,7 @@ void DrawSphereCoords(int x, int y, int z, float radius){
         * Matrix_Scale(radius, radius, radius);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(g_object_id_uniform, SPHERE);
-    DrawVirtualObject("the_sphere");
+    DrawVirtualObject("ball7");
 
 }
 

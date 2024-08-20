@@ -37,6 +37,22 @@ uniform sampler2D TextureImage1;
 uniform sampler2D TextureImage2;
 uniform sampler2D TextureImage3;
 uniform sampler2D TextureImage4;
+uniform sampler2D TextureCueBall;
+uniform sampler2D TextureBall1;
+uniform sampler2D TextureBall2;
+uniform sampler2D TextureBall3;
+uniform sampler2D TextureBall4;
+uniform sampler2D TextureBall5;
+uniform sampler2D TextureBall6;
+uniform sampler2D TextureBall7;
+uniform sampler2D TextureBall8;
+uniform sampler2D TextureBall9;
+uniform sampler2D TextureBall10;
+uniform sampler2D TextureBall11;
+uniform sampler2D TextureBall12;
+uniform sampler2D TextureBall13;
+uniform sampler2D TextureBall14;
+uniform sampler2D TextureBall15;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -152,6 +168,21 @@ void main()
 
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.y - miny) / (maxy - miny);
+    } else if( object_id >= 10 && object_id <= 16 )
+    {
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
+        vec4 p_vector = position_model - bbox_center;
+
+        float px = p_vector.x;
+        float py = p_vector.y;
+        float pz = p_vector.z;
+
+        float rho = length(p_vector);
+        float theta = atan(px, pz);
+        float phi = asin(py / rho);
+
+        U = (theta + M_PI) / (2 * M_PI);
+        V = (phi + M_PI_2) / M_PI;
     }
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
@@ -167,6 +198,54 @@ void main()
     } else if ( object_id == UNKNOWN ){
         Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
         Kd1 = texture(TextureImage4, vec2(U,V)).rgb;
+    } else if (object_id == 10 ){
+        Kd0 = texture(TextureCueBall, vec2(U,V)).rgb;
+        Kd1 = texture(TextureCueBall, vec2(U,V)).rgb;
+    } else if (object_id == 11 ){
+        Kd0 = texture(TextureBall1, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall1, vec2(U,V)).rgb;
+    } else if (object_id == 12 ){
+        Kd0 = texture(TextureBall2, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall2, vec2(U,V)).rgb;
+    } else if (object_id == 13 ){
+        Kd0 = texture(TextureBall3, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall3, vec2(U,V)).rgb;
+    } else if (object_id == 14 ){
+        Kd0 = texture(TextureBall4, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall4, vec2(U,V)).rgb;
+    } else if (object_id == 15 ){
+        Kd0 = texture(TextureBall5, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall5, vec2(U,V)).rgb;
+    } else if (object_id == 16 ){
+        Kd0 = texture(TextureBall6, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall6, vec2(U,V)).rgb;
+    } else if (object_id == 17 ){
+        Kd0 = texture(TextureBall7, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall7, vec2(U,V)).rgb;
+    } else if (object_id == 18 ){
+        Kd0 = texture(TextureBall8, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall8, vec2(U,V)).rgb;
+    } else if (object_id == 19 ){
+        Kd0 = texture(TextureBall9, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall9, vec2(U,V)).rgb;
+    } else if (object_id == 20 ){
+        Kd0 = texture(TextureBall10, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall10, vec2(U,V)).rgb;
+    } else if (object_id == 21 ){
+        Kd0 = texture(TextureBall11, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall11, vec2(U,V)).rgb;
+    } else if (object_id == 22 ){
+        Kd0 = texture(TextureBall12, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall12, vec2(U,V)).rgb;
+    } else if (object_id == 23 ){
+        Kd0 = texture(TextureBall13, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall13, vec2(U,V)).rgb;
+    } else if (object_id == 24 ){
+        Kd0 = texture(TextureBall14, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall14, vec2(U,V)).rgb;
+    } else if (object_id == 25 ){
+        Kd0 = texture(TextureBall15, vec2(U,V)).rgb;
+        Kd1 = texture(TextureBall15, vec2(U,V)).rgb;
     } else {
         Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
         Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
