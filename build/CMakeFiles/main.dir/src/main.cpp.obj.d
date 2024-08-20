@@ -167,6 +167,9 @@ CMakeFiles/main.dir/src/main.cpp.obj: \
  C:/msys64/mingw64/include/c++/13.1.0/bits/stl_list.h \
  C:/msys64/mingw64/include/c++/13.1.0/bits/allocated_ptr.h \
  C:/msys64/mingw64/include/c++/13.1.0/bits/list.tcc \
+ C:/msys64/mingw64/include/c++/13.1.0/set \
+ C:/msys64/mingw64/include/c++/13.1.0/bits/stl_set.h \
+ C:/msys64/mingw64/include/c++/13.1.0/bits/stl_multiset.h \
  C:/msys64/mingw64/include/c++/13.1.0/iostream \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glad/glad.h \
  C:/msys64/mingw64/include/windows.h \
@@ -523,5 +526,6 @@ CMakeFiles/main.dir/src/main.cpp.obj: \
  C:/msys64/mingw64/include/c++/13.1.0/cstring \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/gtc/type_ptr.inl \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/tiny_obj_loader.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/stb_image.h \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/utils.h \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/matrices.h

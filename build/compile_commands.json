@@ -19,6 +19,12 @@
 },
 {
   "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/main.dir/includes_CXX.rsp -g -std=c++11 -o CMakeFiles\\main.dir\\src\\stb_image.cpp.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\src\\stb_image.cpp\"",
+  "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/stb_image.cpp",
+  "output": "CMakeFiles/main.dir/src/stb_image.cpp.obj"
+},
+{
+  "directory": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/build",
   "command": "C:\\msys64\\mingw64\\bin\\gcc.exe  @CMakeFiles/main.dir/includes_C.rsp -g -o CMakeFiles\\main.dir\\src\\glad.c.obj -c \"C:\\Users\\Miguel\\Desktop\\Arquivos de Cadeiras\\FCG\\SinucaBalistica\\src\\glad.c\"",
   "file": "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/glad.c",
   "output": "CMakeFiles/main.dir/src/glad.c.obj"

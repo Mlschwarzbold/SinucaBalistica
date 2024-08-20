@@ -1,12 +1,3 @@
-//     Universidade Federal do Rio Grande do Sul
-//             Instituto de Informática
-//       Departamento de Informática Aplicada
-//
-//    INF01047 Fundamentos de Computação Gráfica
-//               Prof. Eduardo Gastal
-//
-//                   LABORATÓRIO 4
-//
 
 // Arquivos "headers" padrões de C podem ser incluídos em um
 // programa C++, sendo necessário somente adicionar o caractere
@@ -29,7 +20,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <algorithm>
 #include <list>
+#include <set>
 #include <iostream>
 
 // Headers das bibliotecas OpenGL
@@ -138,18 +131,12 @@ void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm
 void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
 void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
 
-
-
-
 // Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
 // outras informações do programa. Definidas após main().
 void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
 void TextRendering_ShowEulerAngles(GLFWwindow* window);
 void TextRendering_ShowProjection(GLFWwindow* window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
-void TextRendering_ShowCollisionT(GLFWwindow* window, float t);
-void TextRendering_PrintBuffer(GLFWwindow* window, char * text);
-
 
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
@@ -159,11 +146,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
-int global_Object_Index;
-int global_Text_Line;
-
-float g_encacapada_anim_speed = 1.0f;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -178,19 +160,106 @@ struct SceneObject
     glm::vec3    bbox_max;
 };
 
+// Abaixo definimos variáveis globais utilizadas em várias funções do código.
+
+// A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
+// (map).  Veja dentro da função BuildTrianglesAndAddToVirtualScene() como que são incluídos
+// objetos dentro da variável g_VirtualScene, e veja na função main() como
+// estes são acessados.
+std::map<std::string, SceneObject> g_VirtualScene;
+
+// Pilha que guardará as matrizes de modelagem.
+std::stack<glm::mat4>  g_MatrixStack;
+
+// Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
+float g_ScreenRatio = 1.0f;
+
+// Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
+float g_AngleX = 0.0f;
+float g_AngleY = 0.0f;
+float g_AngleZ = 0.0f;
+
+// "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
+// pressionado no momento atual. Veja função MouseButtonCallback().
+bool g_LeftMouseButtonPressed = false;
+bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
+bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
+
+// Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
+// usuário através do mouse (veja função CursorPosCallback()). A posição
+// efetiva da câmera é calculada dentro da função main(), dentro do loop de
+// renderização.
+float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
+float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
+float g_CameraDistance = 3.5f; // Distância da câmera para a origem
+
+// Variáveis que controlam rotação do antebraço
+float g_ForearmAngleZ = 0.0f;
+float g_ForearmAngleX = 0.0f;
+
+// Variáveis que controlam translação do torso
+float g_TorsoPositionX = 0.0f;
+float g_TorsoPositionY = 0.0f;
+
+// Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
+bool g_UsePerspectiveProjection = true;
+
+// Variável que controla se o texto informativo será mostrado na tela.
+bool g_ShowInfoText = true;
+
+// Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
+GLuint g_GpuProgramID = 0;
+GLint g_model_uniform;
+GLint g_view_uniform;
+GLint g_projection_uniform;
+GLint g_object_id_uniform;
+GLint g_bbox_min_uniform;
+GLint g_bbox_max_uniform;
+
+// Número de texturas carregadas pela função LoadTextureImage()
+GLuint g_NumLoadedTextures = 0;
+
+// New classes
 class PhysicsObject;
 class Rect;
+
+
+// new global variables
+int global_Object_Index;
+int global_Text_Line;
+
+float g_encacapada_anim_speed = 1.0f;
+float collision_t;
+
+bool g_SpacePressed = false;
+bool g_TapFlag = false;
+bool g_FreeCamera = true;
+
+glm::vec4 g_LookAt_Coords;
+glm::vec4 g_Camera_LookAt;
+
+glm::vec4 g_POV_Coords = glm::vec4(3.0f, 1.7f, 3.0f, 1.0f);
+glm::vec4 g_POV_LookAt;
+float g_free_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
+float g_free_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
+
+glm::vec4 g_FinalCameraCoords;
+glm::vec4 g_FinalCameraLookAtCoords;
+
+float cameraBezierT = 0;
+float g_ball_radius = 0.05f;
+float hole_width = 0.08f;
+
+
+
+
+bool w_held, a_held, s_held, d_held = false;
+
+//New functions
 
 //DRAWING SPHERES
 void DrawSphere(glm::vec4 position, float radius);
 void DrawSphereCoords(int x, int y, int z, float radius);
-
-
-
-
-
-
-
 // Time
 float ellapsed_time();
 
@@ -208,6 +277,9 @@ glm::vec4 planarize(glm::vec4 v);
 glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t);
 glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t);
 
+
+
+// CLASSES
 // Scene Objects
 // +obj ff3
 class PhysicsObject {       
@@ -307,7 +379,7 @@ class PhysicsObject {
         //if is in a hole, ignore regular floor collision
 
         glm::vec4 hole_coords = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        float hole_width = 0.3f;
+        
 
         if(dist(planarize(position) , planarize(hole_coords)) < hole_width){
             
@@ -343,6 +415,44 @@ class PhysicsObject {
 
         
     }
+
+    /*
+    bool collideWithHole(glm::vec4 hole){
+
+        if(dist(planarize(position) , planarize(hole)) < hole_width){
+
+            
+            if( dist(planarize(position) , planarize(hole))< (hole_width - radius)){
+                printf("No collisions\n");
+            } else {
+                glm::vec4 dir = normalize( planarize(position) - planarize(hole));
+                glm::vec4 contact = hole + dir * hole_width;
+                if(position.y <= yMinusBound){
+                    contact.y = position.y;
+                } 
+                float offset = dist(position, contact) - radius;
+                if(offset <= 0){
+                    //Collision with hole edge
+                    position = position + dir * offset;
+                    reflectNormal(contact - position);
+                }
+                
+
+            }
+
+            return true;
+        } else {
+            // Not touching hole
+            return false;
+        }
+
+        float holeBottomY = 0.6f;
+        if(position.y - radius < holeBottomY){
+            position.y = position.y + (holeBottomY - position.y + radius);
+            reflectAxis('y');
+        }
+
+    }*/
 
     void applyStaticFriction(float coef){
         glm::vec4 friction_vector = -normalize(movement_vector) * coef;
@@ -433,91 +543,10 @@ class Rect {
 
 
 
-float collision_t;
-
-// Abaixo definimos variáveis globais utilizadas em várias funções do código.
-
-// A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
-// (map).  Veja dentro da função BuildTrianglesAndAddToVirtualScene() como que são incluídos
-// objetos dentro da variável g_VirtualScene, e veja na função main() como
-// estes são acessados.
-std::map<std::string, SceneObject> g_VirtualScene;
-
-// Pilha que guardará as matrizes de modelagem.
-std::stack<glm::mat4>  g_MatrixStack;
-
-// Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
-float g_ScreenRatio = 1.0f;
-
-// Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
-float g_AngleX = 0.0f;
-float g_AngleY = 0.0f;
-float g_AngleZ = 0.0f;
-
-// "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
-// pressionado no momento atual. Veja função MouseButtonCallback().
-bool g_LeftMouseButtonPressed = false;
-bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
-bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
-
-bool g_SpacePressed = false;
-bool g_TapFlag = false;
-bool g_FreeCamera = false;
-
-// Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
-// usuário através do mouse (veja função CursorPosCallback()). A posição
-// efetiva da câmera é calculada dentro da função main(), dentro do loop de
-// renderização.
-glm::vec4 g_LookAt_Coords;
-glm::vec4 g_Camera_LookAt;
-float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
-float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
-float g_CameraDistance = 3.5f; // Distância da câmera para a origem
-
-glm::vec4 g_POV_Coords = glm::vec4(3.0f, 1.0f, 3.0f, 1.0f);
-glm::vec4 g_POV_LookAt;
-float g_free_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
-float g_free_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
-
-glm::vec4 g_FinalCameraCoords;
-glm::vec4 g_FinalCameraLookAtCoords;
-
-float cameraBezierT = 0;
-
-
-
 Rect playerRect = Rect(-3.0f, 0.0f, 0.3f, 0.3f);
-
 Rect tableRect = Rect(0.0f, 0.0f, 2.0f, 2.0f);
 
-// Variáveis que controlam rotação do antebraço
-float g_ForearmAngleZ = 0.0f;
-float g_ForearmAngleX = 0.0f;
 
-// Variáveis que controlam translação do torso
-float g_TorsoPositionX = 0.0f;
-float g_TorsoPositionY = 0.0f;
-
-// Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
-bool g_UsePerspectiveProjection = true;
-
-// Variável que controla se o texto informativo será mostrado na tela.
-bool g_ShowInfoText = true;
-
-// Flags de teclas
-bool w_held, a_held, s_held, d_held = false;
-
-// Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
-GLuint g_GpuProgramID = 0;
-GLint g_model_uniform;
-GLint g_view_uniform;
-GLint g_projection_uniform;
-GLint g_object_id_uniform;
-GLint g_bbox_min_uniform;
-GLint g_bbox_max_uniform;
-
-// Número de texturas carregadas pela função LoadTextureImage()
-GLuint g_NumLoadedTextures = 0;
 
 int main(int argc, char* argv[])
 {
@@ -548,7 +577,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "INF01047 - 00342191 - Miguel Lemmertz Schwarzbold", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "INF01047 - Sinuca Balistica", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -593,7 +622,11 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/green_fabric_diffuse.jpg");      // TextureImage0
+    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
+    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
+    LoadTextureImage("../../data/metal_texture.jpg"); // TextureImage2:
+    LoadTextureImage("../../data/textures/pool table low_POOL TABLE_BaseColor.png"); // TextureImage3:
+    LoadTextureImage("../../data/textures/tex_u1_v1.jpg"); // TextureImage4:
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
     ObjModel spheremodel("../../data/sphere.obj");
@@ -612,6 +645,15 @@ int main(int argc, char* argv[])
     ComputeNormals(&gunmodel);
     BuildTrianglesAndAddToVirtualScene(&gunmodel);
 
+    ObjModel tabletopmodel("../../data/POOL TABLE.obj");
+    ComputeNormals(&tabletopmodel);
+    BuildTrianglesAndAddToVirtualScene(&tabletopmodel);
+
+    //ObjModel roommodel("../../data/room.obj");
+    //ComputeNormals(&roommodel);
+    //BuildTrianglesAndAddToVirtualScene(&roommodel);    
+
+    
     if ( argc > 1 )
     {
         ObjModel model(argv[1]);
@@ -635,37 +677,49 @@ int main(int argc, char* argv[])
 //||                                                                 +set   ||
 //==========================================================================||
     float run_time = (float)glfwGetTime();
-    PhysicsObject b1 = PhysicsObject("ball", 0.2f, 10.0f, -0.5, 0.0, 1.6);
+    PhysicsObject b1 = PhysicsObject("ball", g_ball_radius, 10.0f, -0.5, 0.0, 1.6);
     b1.setMovementVector(0.0f, 0.0f, 0.1f);
     
     
-    PhysicsObject b2 = PhysicsObject("ball", 0.2f, 10.0f, 0.0, 0.0, 0.0);
+    PhysicsObject b2 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.0, 0.0, 0.0);
     b2.setMovementVector(0.0f, 0.0f, 0.1f);
 
-    PhysicsObject b3 = PhysicsObject("ball", 0.2f, 10.0f, 0.5, 0.0, 0.0);
+    PhysicsObject b3 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.5, 0.0, 0.0);
     b3.setMovementVector(0.0f, 0.0f, 0.1f);
 
-    PhysicsObject b4 = PhysicsObject("ball", 0.2f, 10.0f, -0.3, 0.0, 0.4);
+    PhysicsObject b4 = PhysicsObject("ball", g_ball_radius, 10.0f, -0.3, 0.0, 0.4);
     b4.setMovementVector(0.0f, 0.0f, 0.1f);
 
-    PhysicsObject b5 = PhysicsObject("ball", 0.2f, 10.0f, 0.3, 0.0, 0.4);
+    PhysicsObject b5 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.3, 0.0, 0.4);
     b5.setMovementVector(0.0f, 0.0f, 0.1f);
 
-    PhysicsObject b6 = PhysicsObject("ball", 0.2f, 10.0f, -0.3, 0.0, -0.4);
+    PhysicsObject b6 = PhysicsObject("ball", g_ball_radius, 10.0f, -0.3, 0.0, -0.4);
     b6.setMovementVector(0.0f, 0.0f, 0.1f);
 
-    PhysicsObject b7 = PhysicsObject("ball", 0.2f, 10.0f, 0.3, 0.0, -0.4);
+    PhysicsObject b7 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.3, 0.0, -0.4);
     b7.setMovementVector(0.0f, 0.0f, 0.1f);
     
-    
-
-
-    float xPlusBound = 2;
-    float xMinusBound = -2;
-    float zPlusBound = 2;
-    float zMinusBound = -2;
+    float xPlusBound = 2.25f * 0.5f;
+    float xMinusBound = 1.72f * -0.5f;
+    float zPlusBound = 1.00f * 0.5f;
+    float zMinusBound = 1.05f * -0.5f;
     float yPlusBound = 20;
-    float yMinusBound = -0.2;
+    float yMinusBound = 0.98;
+
+
+ 
+
+
+    std::list<glm::vec4> Holes;
+    Holes.push_back(glm::vec4(xPlusBound, yMinusBound, zPlusBound, 1.0f));
+    Holes.push_back(glm::vec4(xPlusBound, yMinusBound, zMinusBound, 1.0f));
+    Holes.push_back(glm::vec4(xMinusBound, yMinusBound, zPlusBound, 1.0f));
+    Holes.push_back(glm::vec4(xMinusBound, yMinusBound, zMinusBound, 1.0f));
+    Holes.push_back(glm::vec4((xPlusBound + xMinusBound) / 2, yMinusBound, zPlusBound, 1.0f));
+    Holes.push_back(glm::vec4((xPlusBound + xMinusBound) / 2, yMinusBound, zMinusBound, 1.0f));
+
+
+
 
 
     float tableXPlus = 2.0f;
@@ -705,6 +759,7 @@ int main(int argc, char* argv[])
 
 
 
+
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
@@ -731,13 +786,7 @@ int main(int argc, char* argv[])
         // os shaders de vértice e fragmentos).
         glUseProgram(g_GpuProgramID);
 
-        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
-        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
-        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
-        // e ScrollCallback().
-
-
-//==========================================================================||
+ //==========================================================================||
 //||                                                                        ||
 //||                  Camera code                                  ff4      ||
 //||                                                               +cam     ||
@@ -821,20 +870,6 @@ int main(int argc, char* argv[])
         if(d_held){
             g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * 3.0f * delta_t;
             }
-
-
-        //playerRect.toRect(g_POV_Coords);
-
-        //playerRect.collideWithRect(tableRect);
-
-        //g_POV_Coords = playerRect.toFirstPerson();
-        
-
-        // Player-table COllision
-
-        //CollideRects(PhysicsObject rect1, PhysicsObject rect1);
-
-
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
         glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
@@ -845,7 +880,7 @@ int main(int argc, char* argv[])
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
         float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -10.0f; // Posição do "far plane"
+        float farplane  = -1000.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
         {
@@ -876,31 +911,69 @@ int main(int argc, char* argv[])
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
+        #define UNKNOWN -2
         #define SPHERE 0
         #define BUNNY  1
         #define PLANE  2
-        #define GUN  4
+        #define GUN 3
+        #define TABLE_TOP 4
+
 
         // Desenhamos o modelo da esfera
-        model = Matrix_Translate(0.0f, yMinusBound, 0.0f) * Matrix_Scale(0.3f,0.001f,0.3f);
+        model = Matrix_Translate(-1.0f,0.0f,0.0f)
+              * Matrix_Rotate_Z(0.6f)
+              * Matrix_Rotate_X(0.2f)
+              * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, SPHERE);
-        DrawVirtualObject("the_sphere");
+        //DrawVirtualObject("the_sphere");
 
         // Desenhamos o modelo do coelho
-        model = Matrix_Translate(6.0f,0.0f,0.0f)
-              * Matrix_Rotate_Z(g_AngleZ)
-              * Matrix_Rotate_Y(g_AngleY)
-              * Matrix_Rotate_X(g_AngleX);
+        model = Matrix_Translate(1.0f,0.0f,0.0f)
+              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, BUNNY);
-        DrawVirtualObject("the_bunny");
+        //DrawVirtualObject("the_bunny");
+
+        // Desenhamos o plano do chão
+        model = Matrix_Translate(0.0f,-1.1f,0.0f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, PLANE);
+        //DrawVirtualObject("the_plane");
+
+
+        // Desenhamos o plano do chão
+        model = Matrix_Translate(0.0f,1.1f,0.0f) * Matrix_Scale(0.1f, 0.1f, 0.1f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, GUN);
+       // DrawVirtualObject("P88");
 
 
 
+        // Desenhamos A mesa
+        model = Matrix_Translate(0.0f,0.0f,0.0f) * Matrix_Scale(1.0f, 1.0f, 1.0f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, TABLE_TOP);
+        DrawVirtualObject("Base_low_Mesh.024");
+        DrawVirtualObject("Box14_low_Mesh.022");
+        //DrawVirtualObject("chok_low_Mesh.021");
+        DrawVirtualObject("feet_low_Mesh.020");
+        DrawVirtualObject("legs_low_Mesh.019");
+        DrawVirtualObject("rubber_low_Mesh.018");
+        //DrawVirtualObject("stick_low_Mesh.016");
+        //DrawVirtualObject("triangle_low_Mesh.015");
+        DrawVirtualObject("tabletop_low_Mesh.013");
+
+
+        //
+        //model = Matrix_Translate(0.0f,0.0f,0.0f);
+        //glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        //glUniform1i(g_object_id_uniform, UNKNOWN);
+        //DrawVirtualObject("the_room");
 
         // Desenhamos o modelo do chao
-        model = Matrix_Translate(.0f,-0.2f,0.0f)
+        /*
+        model = Matrix_Translate(.0f,yMinusBound,0.0f)
          * Matrix_Scale(2.0f, 1.0f, 2.0f);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
@@ -908,51 +981,33 @@ int main(int argc, char* argv[])
 
         //parede
         model = Matrix_Translate(0.0f,-0.1f,zMinusBound)
-         * Matrix_Scale(2.0f, 0.2f, 1.0f)
+         * Matrix_Scale(2.0f, 1.2f, 1.0f)
          * Matrix_Rotate_X(3.14/2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
 
         model = Matrix_Translate(0.0f,-0.1f,zPlusBound)
-         * Matrix_Scale(2.0f, 0.2f, 1.0f)
+         * Matrix_Scale(2.0f, 1.2f, 1.0f)
          * Matrix_Rotate_X(-3.14/2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
 
         model = Matrix_Translate(xPlusBound,-0.1f,0.0f)
-         * Matrix_Scale(0.2f, 0.2f, 2.0f)
+         * Matrix_Scale(0.2f, 1.2f, 2.0f)
          * Matrix_Rotate_Z(3.14/2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
 
         model = Matrix_Translate(xMinusBound,-0.1f,0.0f)
-         * Matrix_Scale(0.2f, 0.2f, 2.0f)
+         * Matrix_Scale(0.2f, 1.2f, 2.0f)
          * Matrix_Rotate_Z(-3.14/2);
         glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
         glUniform1i(g_object_id_uniform, PLANE);
         DrawVirtualObject("the_plane");
-
-
-        //GUN
-        model = Matrix_Translate(-6.0f,0.0f,0.0f)
-              * Matrix_Rotate_Z(g_AngleZ)
-              * Matrix_Rotate_Y(g_AngleY)
-              * Matrix_Rotate_X(g_AngleX);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, GUN);
-        DrawVirtualObject("Gun.mtl");
-
-        /*
-        glm::vec4 posball = glm::vec4(2.0f,2.0f,-2.0f,1.0f);
-        glm::vec4 posball2 = glm::vec4(3.0f,2.0f,-2.0f,1.0f);
-        glm::vec4 posball3 = glm::vec4(4.0f,2.0f,-2.0f,1.0f);
-        DrawSphere(posball, 0.1);
-        DrawSphere(posball2, 0.2);
-        DrawSphere(posball3, 0.4);
-        */
+    */
 
 //==========================================================================||
 //||                                                                        ||
@@ -966,10 +1021,10 @@ int main(int argc, char* argv[])
         float rayCastDist;
 
         // Displaying bound of table
-        DrawSphereCoords(xPlusBound,0,zPlusBound,0.1f);
-        DrawSphereCoords(xPlusBound,0,zMinusBound,0.1f);
-        DrawSphereCoords(xMinusBound,0,zPlusBound,0.1f);
-        DrawSphereCoords(xMinusBound,0,zMinusBound,0.1f);
+        DrawSphereCoords(xPlusBound,yMinusBound,zPlusBound,0.02f);
+        DrawSphereCoords(xPlusBound,yMinusBound,zMinusBound,0.02f);
+        DrawSphereCoords(xMinusBound,yMinusBound,zPlusBound,0.02f);
+        DrawSphereCoords(xMinusBound,yMinusBound,zMinusBound,0.02f);
 
         for(PhysicsObject &object : PhysicsObjects){
             object.draw();
@@ -994,6 +1049,11 @@ int main(int argc, char* argv[])
 
                 
             }
+        }
+
+        // DRAW THE HOLES
+        for(glm::vec4 hole : Holes){
+            DrawSphere(hole, hole_width);
         }
 
 
@@ -1075,6 +1135,7 @@ int main(int argc, char* argv[])
         TextRendering_PrintBuffer(window, "Sample text");
         */
        
+        
 
         // Imprimimos na tela os ângulos de Euler que controlam a rotação do
         // terceiro cubo.
@@ -1086,7 +1147,6 @@ int main(int argc, char* argv[])
         // Imprimimos na tela informação sobre o número de quadros renderizados
         // por segundo (frames per second).
         TextRendering_ShowFramesPerSecond(window);
-        
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -1235,15 +1295,16 @@ void LoadShadersFromFiles()
     g_view_uniform       = glGetUniformLocation(g_GpuProgramID, "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_GpuProgramID, "projection"); // Variável da matriz "projection" em shader_vertex.glsl
     g_object_id_uniform  = glGetUniformLocation(g_GpuProgramID, "object_id"); // Variável "object_id" em shader_fragment.glsl
-
     g_bbox_min_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_min");
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
-    //glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
-    //glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
     glUseProgram(0);
 }
 
@@ -1306,14 +1367,7 @@ void ComputeNormals(ObjModel* model)
             const glm::vec4  b = vertices[1];
             const glm::vec4  c = vertices[2];
 
-            // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
-            // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
-            //const glm::vec4  n = glm::vec4(0.0f,0.0f,0.0f,0.0f);
-
-            //  normal
-            const glm::vec4  l1 = b - a;
-            const glm::vec4  l2 = c - a;
-            const glm::vec4  n = crossproduct(l1, l2);
+            const glm::vec4  n = crossproduct(b-a,c-a);
 
             for (size_t vertex = 0; vertex < 3; ++vertex)
             {
@@ -1420,6 +1474,9 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
         theobject.num_indices    = last_index - first_index + 1; // Número de indices
         theobject.rendering_mode = GL_TRIANGLES;       // Índices correspondem ao tipo de rasterização GL_TRIANGLES.
         theobject.vertex_array_object_id = vertex_array_object_id;
+
+        theobject.bbox_min = bbox_min;
+        theobject.bbox_max = bbox_max;
 
         g_VirtualScene[model->shapes[shape].name] = theobject;
     }
@@ -1878,22 +1935,10 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_UsePerspectiveProjection = false;
     }
 
-
-    // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
-    if (key == GLFW_KEY_P && action == GLFW_PRESS)
+    // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
+    if (key == GLFW_KEY_H && action == GLFW_PRESS)
     {
-        g_UsePerspectiveProjection = true;
-    }
-
-
-
-    // Se o usuário apertar a tecla F, fazemos um "toggle" entre camera look-at e free camera
-    if (key == GLFW_KEY_F && action == GLFW_PRESS)
-    {
-        g_FreeCamera = !g_FreeCamera;
-        
-        //cameraBezierT = 0;
-    
+        g_ShowInfoText = !g_ShowInfoText;
     }
 
     // Se o usuário apertar a tecla R, recarregamos os shaders dos arquivos "shader_fragment.glsl" e "shader_vertex.glsl".
@@ -1903,7 +1948,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         fprintf(stdout,"Shaders recarregados!\n");
         fflush(stdout);
     }
-
+    if (key == GLFW_KEY_F && action == GLFW_PRESS)
+    {
+        g_FreeCamera = !g_FreeCamera;
+        
+        //cameraBezierT = 0;
+    
+    }
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
     {
         w_held = true;
@@ -2071,41 +2122,6 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
     float charwidth = TextRendering_CharWidth(window);
 
     TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
-}
-
-void TextRendering_ShowCollisionT(GLFWwindow* window, float t)
-{
-    if ( !g_ShowInfoText )
-        return;
-
-    static char  buffer[20] = "?? fps";
-    static int   numchars = 7;
-
-    numchars = snprintf(buffer, 20, "%.2f sec", t);
-
-
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
-
-    TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-(lineheight * 2), 1.0f);
-}
-
-void TextRendering_PrintBuffer(GLFWwindow* window, char * text)
-{
-    if ( !g_ShowInfoText )
-        return;
-
-    static char  buffer[50] = "???";
-    static int   numchars = 3;
-
-    numchars = snprintf(buffer, 50, text);
-
-
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
-
-    TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-(lineheight * global_Text_Line), 1.0f);
-    global_Text_Line++;
 }
 
 // Função para debugging: imprime no terminal todas informações de um modelo
@@ -2470,6 +2486,7 @@ glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t
     return f;
 }
 
+
+
 // set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
 // vim: set spell spelllang=pt_br :
-

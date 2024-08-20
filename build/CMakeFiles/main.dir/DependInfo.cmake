@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/glad.c" "CMakeFiles/main.dir/src/glad.c.obj" "gcc" "CMakeFiles/main.dir/src/glad.c.obj.d"
   "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/main.cpp" "CMakeFiles/main.dir/src/main.cpp.obj" "gcc" "CMakeFiles/main.dir/src/main.cpp.obj.d"
+  "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/stb_image.cpp" "CMakeFiles/main.dir/src/stb_image.cpp.obj" "gcc" "CMakeFiles/main.dir/src/stb_image.cpp.obj.d"
   "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/textrendering.cpp" "CMakeFiles/main.dir/src/textrendering.cpp.obj" "gcc" "CMakeFiles/main.dir/src/textrendering.cpp.obj.d"
   "C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/tiny_obj_loader.cpp" "CMakeFiles/main.dir/src/tiny_obj_loader.cpp.obj" "gcc" "CMakeFiles/main.dir/src/tiny_obj_loader.cpp.obj.d"
   )
