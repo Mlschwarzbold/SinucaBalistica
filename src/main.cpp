@@ -323,6 +323,7 @@ class PhysicsObject {
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
             glUniform1i(g_object_id_uniform, index + 10);
             DrawVirtualObject("the_sphere");
+            
     }
 
     void advance_time(float dt){
@@ -332,12 +333,18 @@ class PhysicsObject {
 
         // Update angle
 
-        if(norm(movement_vector) > 0){
-        glm::vec4 rotation_axis = crossproduct(up_vector, movement_vector);
-        float angle = 1 * norm(movement_vector * dt); // math
-
         
-            //rotateByAxis(normalize(rotation_axis), 0.000f);        
+
+        if(length(movement_vector) > 0.1 /*&& pow(movement_vector.x,2 ) > 0.1f && pow(movement_vector.z, 2) > 0.1f */){
+            
+            //rotateByAxis(up_vector, 3.14/6);
+            glm::vec4 rotation_axis = normalize(crossproduct(up_vector, movement_vector));
+            float angle = 1 * length(movement_vector); // math
+            //std::cout << length(rotation_axis) << std::endl;
+            
+            glm::vec4 weird_vector = normalize(glm::vec4(1.0f, 2.0f, 1.0f, 0.0f));
+
+            rotateByAxis(weird_vector, length(movement_vector) * dt * 10.0f);        
         }
     }
 
@@ -475,7 +482,7 @@ class PhysicsObject {
 
     void rotateByAxis(glm::vec4 axis, float angle){
 
-        rotation_matrix = rotation_matrix * Matrix_Axis_Rotation(axis, angle);
+        rotation_matrix = rotation_matrix * Matrix_Axis_Rotation2(axis, angle);
 
     }
 };
@@ -1162,6 +1169,7 @@ int main(int argc, char* argv[])
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
                                                                          + 0.4f * impactVector
                                                                           + 0.6f * ((camera_view_vector)));
+                
             }
         } 
 
