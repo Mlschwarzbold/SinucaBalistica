@@ -28,6 +28,7 @@ uniform mat4 projection;
 #define GUN 3
 #define TABLE_TOP 4
 #define BRICK_ROOM 21
+#define AK47 26
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -57,6 +58,7 @@ uniform sampler2D TextureBall13;
 uniform sampler2D TextureBall14;
 uniform sampler2D TextureBall15;
 uniform sampler2D brick_room_texture;
+uniform sampler2D ak47_texture;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -172,7 +174,7 @@ void main()
         Ka = vec3(0.0,0.0,0.0);
         q = 20.0;
     } 
-    else if ( object_id == GUN)
+    else if ( object_id == GUN || object_id == AK47)
     {
         // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
         // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência
@@ -298,6 +300,9 @@ void main()
     } else if (object_id == 25 ){
         Kd0 = texture(TextureBall15, vec2(U,V)).rgb;
         Kd1 = texture(TextureBall15, vec2(U,V)).rgb;
+    } else if ( object_id == AK47 ){
+        Kd0 = texture(ak47_texture, vec2(U,V)).rgb;
+        Kd1 = texture(ak47_texture, vec2(U,V)).rgb;
     } else {
         Kd0 = texture(brick_room_texture, vec2(U,V)).rgb;
         Kd1 = texture(brick_room_texture, vec2(U,V)).rgb;

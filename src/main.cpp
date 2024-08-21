@@ -191,7 +191,7 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição
-// efetiva da câmera é calculada dentro da função main(), dentro do loop de
+// efetiva da câmera é calculada dentro da função main(), dentro do loops de
 // renderização.
 float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
@@ -257,6 +257,8 @@ float hole_width = 0.09f;
 // vars
 float g_recoilAnim = 0;
 float g_zoomAnim = 0;
+float g_ak_downtime = 0;
+float g_ak_downtime_const = 0.1;
 
 glm::vec4 up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -278,6 +280,8 @@ bool w_held, a_held, s_held, d_held, shift_held, ctrl_held = false;
 float walk_speed = 2.0f;
 bool opening_shot = true;
 float opening_multiplier = 5.0f;
+
+int gunType = 0;
 
 //New functions
 
@@ -344,7 +348,7 @@ class PhysicsObject {
                 * Matrix_Scale(radius, radius, radius)
                 * rotation_matrix;
             glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-            glUniform1i(g_object_id_uniform, index + 10);
+            glUniform1i(g_object_id_uniform, (index % 15) + 10);
             DrawVirtualObject("the_sphere");
             
     }
@@ -651,7 +655,7 @@ int main(int argc, char* argv[])
 
 
     // Hides cursor -> doesnt work for some reason
-    glfwGetInputMode(window, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR , GLFW_CURSOR_DISABLED);
 
     // Definimos a função de callback que será chamada sempre que a janela for
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
@@ -695,7 +699,9 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/textures/balls/Ball13.jpg"); // TextureBall13:
     LoadTextureImage("../../data/textures/balls/Ball14.jpg"); // TextureBall14:
     LoadTextureImage("../../data/textures/balls/Ball15.jpg"); // TextureBall15:
+
     LoadTextureImage("../../data/brick_room/material_diffuse.jpeg"); // BrickRoom:
+    LoadTextureImage("../../data/ak-47/mat0_c.jpeg"); // ak47:
 
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
@@ -722,6 +728,10 @@ int main(int argc, char* argv[])
     ObjModel brickroommodel("../../data/brick_room/basement.obj");
     ComputeNormals(&brickroommodel);
     BuildTrianglesAndAddToVirtualScene(&brickroommodel);    
+
+    ObjModel ak47model("../../data/ak-47/ak-47.obj");
+    ComputeNormals(&ak47model);
+    BuildTrianglesAndAddToVirtualScene(&ak47model);  
 
     
     if ( argc > 1 )
@@ -1107,6 +1117,7 @@ int main(int argc, char* argv[])
         #define TABLE_TOP 4
         #define UNKNOWN -2
         #define BRICK_ROOM 21
+        #define AK47 26
 
 
         // Desenhamos o modelo da esfera
@@ -1160,20 +1171,82 @@ int main(int argc, char* argv[])
         DrawVirtualObject("group_7_ID91");
         DrawVirtualObject("group_8_ID104");
 
-        // Desenhamos o plano do chão
-        model = Matrix_Translate(g_POV_Coords.x, g_POV_Coords.y, g_POV_Coords.z)
-        * Matrix_Rotate_X(0.0f)
-        * Matrix_Rotate_Y(g_free_CameraTheta + (3.14))
-        * Matrix_Rotate_Z(g_free_CameraPhi + -LERP(0, (3.14 / LERP(5, 20, g_zoomAnim)) ,g_recoilAnim))
-        * Matrix_Translate(
-        LERP(-0.15f, -0.3f, g_zoomAnim),
-        LERP(-0.2f, -0.18f, g_zoomAnim),
-        LERP(-0.1f, 0.0f, g_zoomAnim))
+        // Desenhamos o plano da arma
+
+        if(gunType == 0){
+            model = Matrix_Translate(g_POV_Coords.x, g_POV_Coords.y, g_POV_Coords.z)
+            * Matrix_Rotate_X(0.0f)
+            * Matrix_Rotate_Y(g_free_CameraTheta + (3.14))
+            * Matrix_Rotate_Z(g_free_CameraPhi + -LERP(0, (3.14 / LERP(5, 20, g_zoomAnim)) ,g_recoilAnim))
+            * Matrix_Translate(
+            LERP(-0.15f, -0.3f, g_zoomAnim),
+            LERP(-0.2f, -0.18f, g_zoomAnim),
+            LERP(-0.1f, 0.0f, g_zoomAnim))
+            
+            * Matrix_Scale(0.01f, 0.01f, 0.01f);
+            glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+            glUniform1i(g_object_id_uniform, GUN);
+            DrawVirtualObject("P88");
+        } else if(gunType == 1){
+            // ak 47
+            model = Matrix_Translate(g_POV_Coords.x, g_POV_Coords.y, g_POV_Coords.z)
+            * Matrix_Rotate_X(0.0f)
+            * Matrix_Rotate_Y(g_free_CameraTheta + (3.14))
+            * Matrix_Rotate_Z(g_free_CameraPhi + -LERP(0, (3.14 / LERP(30, 50, g_zoomAnim)) ,g_recoilAnim))
+            * Matrix_Translate(
+            LERP(-0.25f, -0.35f, g_zoomAnim),
+            LERP(-0.25f, -0.20f, g_zoomAnim),
+            LERP(-0.1f, 0.0f, g_zoomAnim))
+            * Matrix_Rotate_Y(3.141f)
+            * Matrix_Scale(0.05f, 0.05f, 0.05f);
+            glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+            glUniform1i(g_object_id_uniform, AK47);
+            DrawVirtualObject("magazine_low_0");
+            DrawVirtualObject("stock_low_0");
+            DrawVirtualObject("rear_sight_low_0");
+            DrawVirtualObject("pistolstock_low_0");
+            DrawVirtualObject("upperreceiver_low_0");
+            DrawVirtualObject("barrel_element_low_0");
+            DrawVirtualObject("front_sight_big_cylinder_low_0");
+            DrawVirtualObject("rear_sight_screw_low_0");
+            DrawVirtualObject("safetyswitchscrew_low_0");
+            DrawVirtualObject("safetyswitch_low_0");
+            DrawVirtualObject("rear_sight_element_b_low_0");
+            DrawVirtualObject("rear_sight_element_a_low_0");
+            DrawVirtualObject("swivel_low_0");
+            DrawVirtualObject("bolt_carrier_low_0");
+            DrawVirtualObject("receiver_low_0");
+            DrawVirtualObject("rear_sight_leaf_low_0");
+            DrawVirtualObject("trigger_low_0");
+            DrawVirtualObject("spring_low_0");
+            DrawVirtualObject("rear_sight_switch_knob_low_0");
+            DrawVirtualObject("rear_sight_switch_low_0");
+            DrawVirtualObject("sylinder_low_0");
+            DrawVirtualObject("barrel_cylinder_low_0");
+            DrawVirtualObject("front_sight_needle_low_0");
+            DrawVirtualObject("stock_element_low_0");
+            DrawVirtualObject("front_sight_cylinder_low_0");
+            DrawVirtualObject("rear_sight_element_screw_low_0");
+            DrawVirtualObject("receiver_screws_low_0");
+            DrawVirtualObject("rear_sight_cylinder_low_0");
+            DrawVirtualObject("triggerguard_screws_low_0");
+            DrawVirtualObject("triggerguard_low_0");
+            DrawVirtualObject("magazine_catch_low_0");
+            DrawVirtualObject("muzzlebreak_low_0");
+            DrawVirtualObject("stock_screws_low_0");
+            DrawVirtualObject("barrel_low_0");
+            DrawVirtualObject("triggerguard_upper_low_0");
+            DrawVirtualObject("gas_block_low_0");
+            DrawVirtualObject("gas_cylinder_low_0");
+            DrawVirtualObject("handguard_low_0");
+            DrawVirtualObject("element_rear_sight_low_0");
+            DrawVirtualObject("handguard_upper_low_0");
+            DrawVirtualObject("handguardmetal_low_0");
+            DrawVirtualObject("front_sight_low_0");
+            DrawVirtualObject("polySurface228_0");
+            DrawVirtualObject("polySurface229_0");
+        }
         
-        * Matrix_Scale(0.01f, 0.01f, 0.01f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, GUN);
-        DrawVirtualObject("P88");
 
 
 
@@ -1297,22 +1370,37 @@ int main(int argc, char* argv[])
             g_recoilAnim = 0;
         }
 
+        if(g_ak_downtime > 0){
+            g_ak_downtime = g_ak_downtime - delta_t;
+        } else {
+            g_ak_downtime = 0;
+        }
+
+
 
 
         // Makeshift crosshair
         DrawSphere(camera_position_c + camera_view_vector * 0.2f, 0.001f, 0);
 
-        if(g_TapFlag){
+
+        bool is_shooting = false;
+
+        if(g_LeftMouseButtonPressed & gunType == 1){
+            if(g_ak_downtime <= 0){
+                g_ak_downtime = g_ak_downtime_const;
+                g_recoilAnim = 1;
+                is_shooting = true;
+            }
+        }
+
+
+        if(g_TapFlag && gunType == 0){
             g_TapFlag = false;
             g_recoilAnim = 1;
-            
+            is_shooting = true;
+        }
 
-            
-
-            
-
-
-            
+        if(is_shooting){
             //ma_sound_set_volume(&gunshot_sound, 0.1f);
             ma_sound_stop(&gunshot_sound);
             ma_sound_seek_to_pcm_frame(&gunshot_sound, 0);
@@ -1353,13 +1441,15 @@ int main(int argc, char* argv[])
                 if(opening_shot){
                     multiplier = opening_multiplier;
                     opening_shot = false;
+                } else if (gunType == 1){
+                    multiplier = 3.0f;
                 } else {
-                    multiplier = 1.0f;
+                    multiplier = 1.0f;  
                 }
 
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
-                                                                         + 0.1f * impactVector
-                                                                          + 0.9f * planarize(camera_view_vector) * multiplier);
+                                                                         + 0.6f * impactVector
+                                                                          + 0.4f * planarize(camera_view_vector) * multiplier);
 
 
                 ma_sound_stop(&clack_sound);
@@ -1606,6 +1696,7 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall15"), 20);
 
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "brick_room_texture"), 21);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "ak47_texture"), 22);
     glUseProgram(0);
 }
 
@@ -2245,6 +2336,20 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_UsePerspectiveProjection = false;
     }
 
+
+    // Guns
+    // Se o usuário apertar a tecla 1, muda pra ak47
+    if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+    {
+        gunType = 1;
+    }
+
+    // Se o usuário apertar a tecla 1, muda pra pistola
+    if (key == GLFW_KEY_0 && action == GLFW_PRESS)
+    {
+        gunType = 0;
+    }
+
     // Se o usuário apertar a tecla H, fazemos um "toggle" do texto informativo mostrado na tela.
     if (key == GLFW_KEY_H && action == GLFW_PRESS)
     {
@@ -2856,13 +2961,17 @@ void resetBalls(){
     b1.setMovementVector(0.0f, 0.1f, 0.0f);
     PhysicsObjects.push_back(b1);
 
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i <9; i++){
         for(int j = 0; j < i; j++){
 
-            PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
-            b.setMovementVector(0.0f, 0.1f, 0.0f);
-            PhysicsObjects.push_back(b);
-            //std::cout << "BALLS" << std::endl;
+            for(int k = 0; k < 5; k++){
+                PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, k * y, z);
+                b.setMovementVector(0.0f, 0.1f, 0.0f);
+                PhysicsObjects.push_back(b);
+
+            }
+            
+
 
 
             z = z + diameter ;
