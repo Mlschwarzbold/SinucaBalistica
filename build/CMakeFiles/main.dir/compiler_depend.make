@@ -757,8 +757,14 @@ CMakeFiles/main.dir/src/main.cpp.obj: C:/Users/Miguel/Desktop/Arquivos\ de\ Cade
   C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/gtc/type_ptr.inl \
   C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/tiny_obj_loader.h \
   C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/stb_image.h \
+  C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/miniaudio.h \
+  C:/msys64/mingw64/include/c++/13.1.0/math.h \
+  C:/msys64/mingw64/include/strings.h \
+  C:/msys64/mingw64/include/sys/stat.h \
+  C:/msys64/mingw64/include/io.h \
   C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/utils.h \
-  C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/matrices.h
+  C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/matrices.h \
+  C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/src/collisions.hpp
 
 CMakeFiles/main.dir/src/stb_image.cpp.obj: C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/src/stb_image.cpp \
   C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/stb_image.h \
@@ -1399,6 +1405,12 @@ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/dejav
 
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/src/textrendering.cpp:
 
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/src/stb_image.cpp:
+
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/matrices.h:
+
+C:/msys64/mingw64/include/io.h:
+
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float4x3.hpp:
 
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat4x3.inl:
@@ -1751,6 +1763,10 @@ C:/msys64/mingw64/include/corecrt.h:
 
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_float2x2.hpp:
 
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/utils.h:
+
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec4.inl:
+
 C:/msys64/mingw64/include/_mingw.h:
 
 C:/msys64/mingw64/include/c++/13.1.0/new:
@@ -1768,6 +1784,10 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/xsaveoptintrin.h:
 C:/msys64/mingw64/include/malloc.h:
 
 C:/msys64/mingw64/include/processenv.h:
+
+C:/msys64/mingw64/include/sys/stat.h:
+
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/src/collisions.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/lzcntintrin.h:
 
@@ -1918,8 +1938,6 @@ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/e
 C:/msys64/mingw64/include/pshpack4.h:
 
 C:/msys64/mingw64/include/c++/13.1.0/bits/char_traits.h:
-
-C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/src/stb_image.cpp:
 
 C:/msys64/mingw64/include/threadpoollegacyapiset.h:
 
@@ -2101,8 +2119,6 @@ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/e
 
 C:/msys64/mingw64/include/c++/13.1.0/cerrno:
 
-C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x4.hpp:
-
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_clip_space.hpp:
 
 C:/msys64/mingw64/include/c++/13.1.0/bits/functional_hash.h:
@@ -2118,6 +2134,10 @@ C:/msys64/mingw64/include/c++/13.1.0/streambuf:
 C:/msys64/mingw64/include/winnetwk.h:
 
 C:/msys64/mingw64/include/c++/13.1.0/vector:
+
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_mat2x4.hpp:
+
+C:/msys64/mingw64/include/strings.h:
 
 C:/msys64/mingw64/include/c++/13.1.0/bits/stl_vector.h:
 
@@ -2467,15 +2487,11 @@ C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/e
 
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int1.hpp:
 
-C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/matrices.h:
-
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/vector_int1_precision.hpp:
 
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/gtc/type_ptr.inl:
 
-C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/detail/type_vec4.inl:
-
-C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/utils.h:
+C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/miniaudio.h:
 
 C:/Users/Miguel/Desktop/Arquivos\ de\ Cadeiras/FCG/SinucaBalistica/include/glm/ext/matrix_double4x3_precision.hpp:
 

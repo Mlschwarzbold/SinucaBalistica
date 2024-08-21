@@ -759,8 +759,14 @@ CMakeFiles/main.dir/src/main.cpp.obj
  C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include/glm/gtc/type_ptr.inl
  C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include/tiny_obj_loader.h
  C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include/stb_image.h
+ C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include/miniaudio.h
+ C:/msys64/mingw64/include/c++/13.1.0/math.h
+ C:/msys64/mingw64/include/strings.h
+ C:/msys64/mingw64/include/sys/stat.h
+ C:/msys64/mingw64/include/io.h
  C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include/utils.h
  C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/include/matrices.h
+ C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/collisions.hpp
 
 CMakeFiles/main.dir/src/stb_image.cpp.obj
  C:/Users/Miguel/Desktop/Arquivos de Cadeiras/FCG/SinucaBalistica/src/stb_image.cpp

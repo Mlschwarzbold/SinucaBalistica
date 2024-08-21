@@ -39,10 +39,14 @@
 
 #include <stb_image.h>
 
+//audio
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
+
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 #include "matrices.h"
-
+#include "collisions.hpp"
 // Estrutura que representa um modelo geométrico carregado a partir de um
 // arquivo ".obj". Veja https://en.wikipedia.org/wiki/Wavefront_.obj_file .
 struct ObjModel
@@ -252,6 +256,7 @@ float hole_width = 0.09f;
 
 // vars
 float g_recoilAnim = 0;
+float g_zoomAnim = 0;
 
 glm::vec4 up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
@@ -264,7 +269,13 @@ float zMinusBound = 1.05f * -0.5f;
 float yPlusBound = 20;
 float yMinusBound = 0.98;
 
+glm::vec4 player_dim =      glm::vec4(0.2f, 1.75f, 0.2f, 0.0f);
+glm::vec4 table_coords =    glm::vec4((xPlusBound + xMinusBound)/2, 0.0f, (zPlusBound + zMinusBound)/2 + -0.15f, 1.0f);
+glm::vec4 table_dim =       glm::vec4(xPlusBound, 1.0f, zPlusBound + 0.15f, 0.0f);
+
 bool w_held, a_held, s_held, d_held, shift_held, ctrl_held = false;
+
+float walk_speed = 2.0f;
 
 //New functions
 
@@ -276,8 +287,8 @@ float ellapsed_time();
 
 // Collisions
 float t_colision_sphere_plane(PhysicsObject sphere, char axis, int direction, float offset);
-void collideSpheres(PhysicsObject * o1, PhysicsObject * o2);
-glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVecd, float * dist);
+bool collideSpheres(PhysicsObject * o1, PhysicsObject * o2);
+//glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVecd, float * dist);
 
 
 //utility
@@ -436,7 +447,7 @@ class PhysicsObject {
             reflectAxis('y');
         }
 
-        if(dist(planarize(position) , planarize(hole)) < hole_width){
+        if(point_cillinder_collide(position, hole, hole_width)){
 
             
             if( dist(planarize(position) , planarize(hole))< (hole_width - radius)){
@@ -646,7 +657,7 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
     LoadTextureImage("../../data/P88_gloss.jpg"); // TextureImage2:
     LoadTextureImage("../../data/textures/pool table low_POOL TABLE_BaseColor.png"); // TextureImage3:
-    LoadTextureImage("../../data/textures/tex_u1_v1.jpg"); // TextureImage4:
+    LoadTextureImage("../../data/P88_gloss.jpg"); // TextureImage4:
 
     LoadTextureImage("../../data/textures/balls/BallCue.jpg"); // TextureCueBall:
     LoadTextureImage("../../data/textures/balls/Ball1.jpg"); // TextureBall1:
@@ -709,6 +720,42 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+
+//==========================================================================||
+//||                                                                        ||
+//||                  Sounds                                                ||
+//||                                                                 +snd   ||
+//==========================================================================||
+
+    ma_result result;
+    ma_engine engine;
+
+    result = ma_engine_init(NULL, &engine);
+    if (result != MA_SUCCESS) {
+        std::cout << "Audio engine not working" << std::endl;
+    } else {
+        std::cout << "Audio engine is working" << std::endl;
+    }
+
+    ma_sound gunshot_sound;
+   
+
+    result = ma_sound_init_from_file(&engine, "../../sounds/gunshot.mp3", 0, NULL, NULL, &gunshot_sound);
+    if (result != MA_SUCCESS) {
+        std::cout << "Audio  not working" << std::endl;
+        std::cout << result << std::endl;
+        printf("error: %d, \n", result);
+    } else {
+        std::cout << "Audio is working" << std::endl;
+
+        }
+     ma_sound_set_volume(&gunshot_sound, 0.02f);
+
+    ma_sound clack_sound;
+
+    result = ma_sound_init_from_file(&engine, "../../sounds/clack.mp3", 0, NULL, NULL, &clack_sound);
+    ma_sound_set_volume(&clack_sound, 0.2f);
 
 //==========================================================================||
 //||                                                                        ||
@@ -875,6 +922,20 @@ int main(int argc, char* argv[])
             }
         }
 
+        if(g_RightMouseButtonPressed){
+            if(g_zoomAnim < 1){
+                g_zoomAnim = g_zoomAnim + delta_t;
+            } else {
+                g_zoomAnim = 1;
+            }
+        } else {
+            if(g_zoomAnim > 0){
+                g_zoomAnim = g_zoomAnim - delta_t;
+            } else {
+                g_zoomAnim = 0;
+            }
+        }
+
         //printf("bezier: %f \n", cameraBezierT);
         
 
@@ -925,17 +986,20 @@ int main(int argc, char* argv[])
         glm::vec4 camera_horizontal_forward_vector = planarize(camera_view_vector);
         glm::vec4 camera_horizontal_normalized = normalize(camera_horizontal_forward_vector);
 
+
+        float zoom_slowdown = Bezier(1, 1, 0.3, 0.3, g_zoomAnim);
+
         if(w_held){
-            g_POV_Coords = g_POV_Coords + camera_horizontal_normalized * 2.0f * delta_t;
+            g_POV_Coords = g_POV_Coords + camera_horizontal_normalized * walk_speed * zoom_slowdown * delta_t;
             }
         if(s_held){
-            g_POV_Coords = g_POV_Coords - camera_horizontal_normalized * 2.0f * delta_t;
+            g_POV_Coords = g_POV_Coords - camera_horizontal_normalized * walk_speed * zoom_slowdown * delta_t;
             }
         if(a_held){
-            g_POV_Coords = g_POV_Coords - camera_side_vector_normalized * 1.5f * delta_t;
+            g_POV_Coords = g_POV_Coords - camera_side_vector_normalized * walk_speed * zoom_slowdown * delta_t;
             }
         if(d_held){
-            g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * 1.5f * delta_t;
+            g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * walk_speed * zoom_slowdown * delta_t;
             }
         if(shift_held){
             g_POV_Coords = g_POV_Coords + camera_up_vector * 1.5f * delta_t;
@@ -943,6 +1007,32 @@ int main(int argc, char* argv[])
         if(ctrl_held){
             g_POV_Coords = g_POV_Coords - camera_up_vector * 1.5f * delta_t;
             }
+
+
+        bool isCollidingWithTable = collision_box_box(g_POV_Coords, player_dim, table_coords, table_dim);
+
+        
+        // top 10 worst code ever
+        if(isCollidingWithTable){
+            if(w_held){
+                g_POV_Coords = g_POV_Coords - camera_horizontal_normalized * walk_speed * zoom_slowdown * delta_t;
+                }
+            if(s_held){
+                g_POV_Coords = g_POV_Coords + camera_horizontal_normalized * walk_speed * zoom_slowdown * delta_t;
+                }
+            if(a_held){
+                g_POV_Coords = g_POV_Coords + camera_side_vector_normalized * walk_speed * zoom_slowdown * delta_t;
+                }
+            if(d_held){
+                g_POV_Coords = g_POV_Coords - camera_side_vector_normalized * walk_speed * zoom_slowdown * delta_t;
+                }
+        }
+        
+        
+
+
+
+
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
         glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
@@ -959,7 +1049,8 @@ int main(int argc, char* argv[])
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = (3.141592 / 3.0f); // / LERP(r, 1, cameraBezierT);
+            float field_of_view = (3.141592 / 3.0f) * Bezier(1, 1 , 0.3,  0.3, g_zoomAnim); // / LERP(r, 1, cameraBezierT);
+
             projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
         }
         else
@@ -1137,7 +1228,11 @@ int main(int argc, char* argv[])
                 //        glm::vec4 vector = getVectorBetween(o1, o2);
                 //        o1.reflectNormal(vector);
                 //  
-                    collideSpheres(&o1, &o2);
+                    if(collideSpheres(&o1, &o2)){
+                        ma_sound_stop(&clack_sound);
+                        ma_sound_seek_to_pcm_frame(&clack_sound, 0);
+                        ma_sound_start(&clack_sound);
+                    }
                 }
 
                 
@@ -1179,6 +1274,25 @@ int main(int argc, char* argv[])
             g_TapFlag = false;
             g_recoilAnim = 1;
             
+
+            
+
+            
+
+
+            
+            //ma_sound_set_volume(&gunshot_sound, 0.1f);
+            ma_sound_stop(&gunshot_sound);
+            ma_sound_seek_to_pcm_frame(&gunshot_sound, 0);
+            ma_sound_start(&gunshot_sound);
+
+            
+            
+            
+                    
+
+
+
             //PhysicsObjects.front().movement_vector = planarize(0.0f * PhysicsObjects.front().movement_vector + 6.0f * normalize(camera_view_vector));
             
             float min_dist = -1.0f;
@@ -1203,6 +1317,12 @@ int main(int argc, char* argv[])
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
                                                                          + 0.1f * impactVector
                                                                           + 0.9f * planarize(camera_view_vector));
+
+
+                ma_sound_stop(&clack_sound);
+                ma_sound_seek_to_pcm_frame(&clack_sound, 0);
+                ma_sound_start(&clack_sound);
+                                                                      
                 
             }
         } 
@@ -1279,6 +1399,9 @@ int main(int argc, char* argv[])
         // pela biblioteca GLFW.
         glfwPollEvents();
     }
+
+    //encerra engine de som
+    ma_engine_uninit(&engine);
 
     // Finalizamos o uso dos recursos do sistema operacional
     glfwTerminate();
@@ -1852,11 +1975,12 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
         // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
         // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
+        // g_LastCursorPosY.  Também, setamos a variávelw 
         // g_LeftMouseButtonPressed como true, para saber que o usuário está
         // com o botão esquerdo pressionado.
         glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
         g_LeftMouseButtonPressed = true;
+        g_TapFlag = true;
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
     {
@@ -1917,10 +2041,10 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     float phimin = -phimax;
     if (!g_FreeCamera)
     {
-
+        float zoom_vision_slowdown = Bezier(1, 1, 0.3,  0.3, g_zoomAnim);
         // Atualizamos parâmetros da câmera com os deslocamentos
-        g_CameraTheta -= 0.01f*dx;
-        g_CameraPhi   += 0.01f*dy;
+        g_CameraTheta -= 0.01f*dx * zoom_vision_slowdown;
+        g_CameraPhi   += 0.01f*dy * zoom_vision_slowdown;
     
         if (g_CameraPhi > phimax)
             g_CameraPhi = phimax;
@@ -2051,7 +2175,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_TorsoPositionX = 0.0f;
         g_TorsoPositionY = 0.0f;
         g_SpacePressed = true;
-        g_TapFlag = true;
+        
     }
     if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
     {
@@ -2542,13 +2666,15 @@ glm::vec4 planarize(glm::vec4 v){
 
 }
 
-void collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
+bool collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
 
     float inset = (o1->radius + o2->radius) - distance(*o1, *o2);
     if(inset > 0){
         // Collision detected, now deal with new vectors
 
         //std::cout << "COLLLIIIIIIIIIIIIIIIISION" << std::endl;
+
+
 
         glm::vec4 v1 = o1->movement_vector;
         glm::vec4 v2 = o2->movement_vector;
@@ -2588,10 +2714,12 @@ void collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
         glm::vec4 o1_out_vector = normalize(o1->position - o2->position);
         o1->position = o1->position + o1_out_vector * (inset /2);
         o2->position = o2->position + o1_out_vector * (- inset /2);
+        return true;
     } 
-    return;
+    return false;
 }
 
+/*
 glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVec, float * dist){
 
     glm::vec4 rayPosCentered = rayPos - spherePos;
@@ -2616,7 +2744,8 @@ glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 ra
     
     *dist = dt * norm(rayVec);
     return contact;
-}
+}*/
+
 
 glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t){
 
@@ -2648,7 +2777,7 @@ glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t
     glm::vec4 f = LERP(d, e, t);
 
     return f;
-}
+} 
 
 
 void resetBalls(){
@@ -2663,14 +2792,14 @@ void resetBalls(){
     global_Object_Index = 0;
 
     PhysicsObject b1 = PhysicsObject("ball", g_ball_radius, 30.0f, 0.7f, 0.0, z);
-    b1.setMovementVector(0.0f, 0.0f, 0.1f);
+    b1.setMovementVector(0.0f, 0.1f, 0.0f);
     PhysicsObjects.push_back(b1);
 
     for(int i = 0; i < 5; i++){
         for(int j = 0; j < i; j++){
 
             PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
-            b.setMovementVector(0.0f, 0.0f, 0.1f);
+            b.setMovementVector(0.0f, 0.1f, 0.0f);
             PhysicsObjects.push_back(b);
             std::cout << "BALLS" << std::endl;
 

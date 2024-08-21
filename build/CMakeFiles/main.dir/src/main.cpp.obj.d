@@ -527,5 +527,10 @@ CMakeFiles/main.dir/src/main.cpp.obj: \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/glm/gtc/type_ptr.inl \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/tiny_obj_loader.h \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/stb_image.h \
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/miniaudio.h \
+ C:/msys64/mingw64/include/c++/13.1.0/math.h \
+ C:/msys64/mingw64/include/strings.h C:/msys64/mingw64/include/sys/stat.h \
+ C:/msys64/mingw64/include/io.h \
  C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/utils.h \
- C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/matrices.h
+ C:/Users/Miguel/Desktop/ARQUIV~1/FCG/SINUCA~1/include/matrices.h \
+ C:\Users\Miguel\Desktop\Arquivos\ de\ Cadeiras\FCG\SinucaBalistica\src\collisions.hpp
