@@ -387,6 +387,19 @@ class PhysicsObject {
         }
     }
 
+    void reflectAxis(char axis, float directional_loss){
+        if(axis == 'x'){
+            movement_vector.x = -movement_vector.x * directional_loss;
+            //encacapar(glm::vec4(0.0f,0.0f,0.0f,1.0f));
+        } else if (axis == 'y'){
+            movement_vector.y = -movement_vector.y * directional_loss;
+        }else if (axis == 'z'){
+            movement_vector.z = -movement_vector.z * directional_loss;
+        } else{
+            printf("Sintax error -> reflectAxis: axis doesnt exist");
+        }
+    }
+
     void reflectNormal(glm::vec4 vector){
         glm::vec4 normal = normalize(vector);
         glm::vec4 new_movement_vector = movement_vector - 2 * dotproduct(movement_vector, normal) * normal;
@@ -435,7 +448,7 @@ class PhysicsObject {
         
         if((position.y - radius < tableHeight)){
             position.y = position.y + (tableHeight - position.y + radius);
-            reflectAxis('y');
+            reflectAxis('y', 0.2);
         }
 
     }
@@ -444,10 +457,10 @@ class PhysicsObject {
     bool collideWithHole(glm::vec4 hole, float tableHeight){
 
         // Collide with the bottom of the hole
-        float holeBottomY = tableHeight - 0.5f;
+        float holeBottomY = tableHeight - 1.5f;
         if(position.y - radius < holeBottomY){
             position.y = position.y + (holeBottomY - position.y + radius);
-            reflectAxis('y');
+            reflectAxis('y', 0.2);
         }
 
         if(point_cillinder_collide(position, hole, hole_width)){
@@ -470,7 +483,7 @@ class PhysicsObject {
                 
 
             }
-            printf("Ball inside hole\n");
+            //printf("Ball inside hole\n");
             return true;
         } else {
             // Not touching hole
@@ -850,7 +863,7 @@ int main(int argc, char* argv[])
             PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
             b.setMovementVector(0.0f, 0.0f, 0.1f);
             PhysicsObjects.push_back(b);
-            std::cout << "BALLS" << std::endl;
+            //std::cout << "BALLS" << std::endl;
 
 
             z = z + diameter ;
@@ -1243,7 +1256,9 @@ int main(int argc, char* argv[])
             }
             object.advance_time(delta_t);
             object.applyStaticFriction(0.6 * delta_t);
+            
             object.movement_vector.y = object.movement_vector.y - 10.0f * delta_t;
+            
         }
 
         //for each pair of objects
@@ -1319,16 +1334,19 @@ int main(int argc, char* argv[])
             for(PhysicsObject &object : PhysicsObjects){
                 rayCastPoint = p_collision_sphere_ray(object.position, object.radius, camera_position_c, camera_view_vector, &rayCastDist);
                 
-                if(rayCastDist < min_dist && (rayCastDist >= 0) || min_dist == -1.0f){
+                //printf("dist: %f, min dist:  %f\n", rayCastDist, min_dist);
+
+                if(rayCastDist < min_dist && (rayCastDist >= 0) ||( min_dist > -1.1f && min_dist < -0.9f )){
+                    //std::cout << "Passed test" << std::endl;
                     min_dist = rayCastDist;       
                     rayCastPointClosest = rayCastPoint;
                     rayCastSelectedObjectPointer = &object;           
                 }
             }
 
-            printf("Max dist: %f\n", min_dist);
+            //printf("Max dist: %f\n", min_dist);
             if(min_dist >= 0.0f){ // testa se o raycast encontrou algum objeto
-                printf("Max dist inside if: %f\n", min_dist);
+                //printf("Max dist inside if: %f\n", min_dist);
                 DrawSphere(rayCastPointClosest, 0.03f, 0);
                 glm::vec4 impactVector = -5.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
                 float multiplier;
@@ -2832,6 +2850,7 @@ void resetBalls(){
 
     PhysicsObjects.clear();
     global_Object_Index = 0;
+    opening_shot = true;
 
     PhysicsObject b1 = PhysicsObject("ball", g_ball_radius, 30.0f, 0.7f, 0.0, z);
     b1.setMovementVector(0.0f, 0.1f, 0.0f);
@@ -2843,7 +2862,7 @@ void resetBalls(){
             PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
             b.setMovementVector(0.0f, 0.1f, 0.0f);
             PhysicsObjects.push_back(b);
-            std::cout << "BALLS" << std::endl;
+            //std::cout << "BALLS" << std::endl;
 
 
             z = z + diameter ;
