@@ -19,6 +19,7 @@ out vec4 position_world;
 out vec4 position_model;
 out vec4 normal;
 out vec2 texcoords;
+out float lamber_gourad;
 
 void main()
 {
@@ -63,5 +64,15 @@ void main()
 
     // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
     texcoords = texture_coefficients;
+
+    // Normal do fragmento atual, interpolada pelo rasterizador a partir das
+    // normais de cada vértice.
+    vec4 n = normalize(normal);
+
+    // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
+    vec4 l = normalize(vec4(1.0,1.0,0.0,0.0));
+
+    // Equação de Iluminação
+    lamber_gourad = max(0,dot(n,l));
 }
 

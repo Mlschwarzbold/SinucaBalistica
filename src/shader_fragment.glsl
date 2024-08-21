@@ -13,6 +13,8 @@ in vec4 position_model;
 // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
 in vec2 texcoords;
 
+in float lamber_gourad;
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -316,12 +318,18 @@ void main()
     // Termo especular utilizando o modelo de iluminação de Phong
     vec3 phong_specular_term  = Ks * I * pow(max(0,dot(r, v)), q);
    
-    // Equação de Iluminação
-    //float lambert = max(0,dot(n,l));
 
-    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
-    color.rgb = Kd0 * color.rgb;
-    //color.rgb = Kd0 * (pow(lambert,1) + 0.01) + Kd1 * (1 - (pow(lambert, 0.2)) + 0.01);
+    if ( object_id == BRICK_ROOM) {
+        // Equação de Iluminação
+        float lambert = max(0,dot(n,l));
+        color.rgb = Kd0 * (pow(lambert,1) + 0.01) + Kd1 * (1 - (pow(lambert, 0.2)) + 0.01);
+    } else if ( object_id >= 10 && object_id <= 25 ) {
+        color.rgb = Kd0 * (pow(lamber_gourad,1) + 0.01) + Kd1 * (1 - (pow(lamber_gourad, 0.2)) + 0.01);
+    }
+    else {
+        color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+        color.rgb = Kd0 * color.rgb;
+    }
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
