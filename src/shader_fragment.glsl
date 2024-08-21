@@ -25,6 +25,7 @@ uniform mat4 projection;
 #define PLANE  2
 #define GUN 3
 #define TABLE_TOP 4
+#define BRICK_ROOM 21
 uniform int object_id;
 
 // Parâmetros da axis-aligned bounding box (AABB) do modelo
@@ -53,6 +54,7 @@ uniform sampler2D TextureBall12;
 uniform sampler2D TextureBall13;
 uniform sampler2D TextureBall14;
 uniform sampler2D TextureBall15;
+uniform sampler2D brick_room_texture;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -141,7 +143,7 @@ void main()
         U = (position_model.x - minx) / (maxx - minx);
         V = (position_model.y - miny) / (maxy - miny);
     }
-    else if ( object_id == PLANE || object_id == TABLE_TOP || object_id == UNKNOWN)
+    else if ( object_id == PLANE || object_id == TABLE_TOP || object_id == GUN || object_id == BRICK_ROOM)
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
@@ -183,6 +185,10 @@ void main()
 
         U = (theta + M_PI) / (2 * M_PI);
         V = (phi + M_PI_2) / M_PI;
+    } else {
+
+        U = texcoords.x;
+        V = texcoords.y;
     }
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
@@ -198,6 +204,9 @@ void main()
     } else if ( object_id == UNKNOWN ){
         Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
         Kd1 = texture(TextureImage4, vec2(U,V)).rgb;
+    } else if ( object_id == BRICK_ROOM ){
+        Kd0 = texture(brick_room_texture, vec2(U,V)).rgb;
+        Kd1 = texture(brick_room_texture, vec2(U,V)).rgb;
     } else if (object_id == 10 ){
         Kd0 = texture(TextureCueBall, vec2(U,V)).rgb;
         Kd1 = texture(TextureCueBall, vec2(U,V)).rgb;
@@ -247,8 +256,8 @@ void main()
         Kd0 = texture(TextureBall15, vec2(U,V)).rgb;
         Kd1 = texture(TextureBall15, vec2(U,V)).rgb;
     } else {
-        Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
-        Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
+        Kd0 = texture(brick_room_texture, vec2(U,V)).rgb;
+        Kd1 = texture(brick_room_texture, vec2(U,V)).rgb;
     }
     
     // Equação de Iluminação

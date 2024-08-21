@@ -253,6 +253,8 @@ float hole_width = 0.09f;
 // vars
 float g_recoilAnim = 0;
 
+glm::vec4 up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
+
 
 
 bool w_held, a_held, s_held, d_held, shift_held, ctrl_held = false;
@@ -296,6 +298,7 @@ class PhysicsObject {
     glm::vec4 movement_vector;
     glm::vec4 hole_coords;
     glm::vec4 pre_encacapada_position;
+    glm::mat4 rotation_matrix = Matrix_Identity();
     
 
     PhysicsObject(std::string t, float r, float m, float x, float y, float z) { // Constructor with parameters
@@ -313,16 +316,29 @@ class PhysicsObject {
     }
 
     void draw(){
-        DrawSphere(position, radius, index);
+        //DrawSphere(position, radius, index);
+            glm::mat4 model = Matrix_Translate(position.x, position.y, position.z) 
+                * Matrix_Scale(radius, radius, radius)
+                * rotation_matrix;
+            glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+            glUniform1i(g_object_id_uniform, index + 10);
+            DrawVirtualObject("the_sphere");
     }
 
     void advance_time(float dt){
-        if( 0 /*encacapada_animation_t != -1 && encacapada_animation_t <= 1*/){
-            encacapada_animation_t = encacapada_animation_t + g_encacapada_anim_speed * dt;
-        } else {
-            position = position + movement_vector * dt;
-        }
+        
+        // Update position
+        position = position + movement_vector * dt;
 
+        // Update angle
+
+        if(norm(movement_vector) > 0){
+        glm::vec4 rotation_axis = crossproduct(up_vector, movement_vector);
+        float angle = 1 * norm(movement_vector * dt); // math
+
+        
+            //rotateByAxis(normalize(rotation_axis), 0.000f);        
+        }
     }
 
     
@@ -454,6 +470,13 @@ class PhysicsObject {
 
     void play_encacapa_animation(){
         position = Bezier(pre_encacapada_position, pre_encacapada_position + movement_vector, hole_coords + glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), hole_coords, encacapada_animation_t);
+    }
+
+
+    void rotateByAxis(glm::vec4 axis, float angle){
+
+        rotation_matrix = rotation_matrix * Matrix_Axis_Rotation(axis, angle);
+
     }
 };
 
@@ -605,9 +628,10 @@ int main(int argc, char* argv[])
     // Carregamos duas imagens para serem utilizadas como textura
     LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
     LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/metal_texture.jpg"); // TextureImage2:
+    LoadTextureImage("../../data/P88_gloss.jpg"); // TextureImage2:
     LoadTextureImage("../../data/textures/pool table low_POOL TABLE_BaseColor.png"); // TextureImage3:
     LoadTextureImage("../../data/textures/tex_u1_v1.jpg"); // TextureImage4:
+
     LoadTextureImage("../../data/textures/balls/BallCue.jpg"); // TextureCueBall:
     LoadTextureImage("../../data/textures/balls/Ball1.jpg"); // TextureBall1:
     LoadTextureImage("../../data/textures/balls/Ball2.jpg"); // TextureBall2:
@@ -624,10 +648,11 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/textures/balls/Ball13.jpg"); // TextureBall13:
     LoadTextureImage("../../data/textures/balls/Ball14.jpg"); // TextureBall14:
     LoadTextureImage("../../data/textures/balls/Ball15.jpg"); // TextureBall15:
+    LoadTextureImage("../../data/brick_room/material_diffuse.jpeg"); // BrickRoom:
 
 
     // Construímos a representação de objetos geométricos através de malhas de triângulos
-    ObjModel spheremodel("../../data/ball7.obj");
+    ObjModel spheremodel("../../data/sphere.obj");
     ComputeNormals(&spheremodel);
     BuildTrianglesAndAddToVirtualScene(&spheremodel);
 
@@ -647,9 +672,9 @@ int main(int argc, char* argv[])
     ComputeNormals(&tabletopmodel);
     BuildTrianglesAndAddToVirtualScene(&tabletopmodel);
 
-    //ObjModel roommodel("../../data/room.obj");
-    //ComputeNormals(&roommodel);
-    //BuildTrianglesAndAddToVirtualScene(&roommodel);    
+    ObjModel brickroommodel("../../data/brick_room/basement.obj");
+    ComputeNormals(&brickroommodel);
+    BuildTrianglesAndAddToVirtualScene(&brickroommodel);    
 
     
     if ( argc > 1 )
@@ -886,7 +911,7 @@ int main(int argc, char* argv[])
 
         // Note que, no sistema de coordenadas da câmera, os planos near e far
         // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
-        float nearplane = -0.1f;  // Posição do "near plane"
+        float nearplane = -0.01f;  // Posição do "near plane"
         float farplane  = -1000.0f; // Posição do "far plane"
 
         if (g_UsePerspectiveProjection)
@@ -925,6 +950,7 @@ int main(int argc, char* argv[])
         #define GUN 3
         #define TABLE_TOP 4
         #define UNKNOWN -2
+        #define BRICK_ROOM 21
 
 
         // Desenhamos o modelo da esfera
@@ -966,6 +992,18 @@ int main(int argc, char* argv[])
         //DrawVirtualObject("stick_low_Mesh.016");
         //DrawVirtualObject("triangle_low_Mesh.015");
         DrawVirtualObject("tabletop_low_Mesh.013");
+
+
+        model = Matrix_Translate(0.0f,0.0f,0.0f) * Matrix_Scale(1.0f, 1.0f, 1.0f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, BRICK_ROOM);
+        DrawVirtualObject("group_3_ID27");
+        DrawVirtualObject("group_4_ID64");
+        DrawVirtualObject("group_5_ID71");
+        DrawVirtualObject("group_6_ID78");
+        DrawVirtualObject("group_7_ID91");
+        DrawVirtualObject("group_8_ID104");
+
 
 
         //
@@ -1031,7 +1069,8 @@ int main(int argc, char* argv[])
 
         for(PhysicsObject &object : PhysicsObjects){
             object.draw();
-            
+            //object.rotateByAxis(camera_view_vector ,delta_t);
+
             bool inHole = false;
             if(object.index != 0) for(glm::vec4 hole : Holes){
                 // or ( inHole, collideWithHoles)
@@ -1357,6 +1396,8 @@ void LoadShadersFromFiles()
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall13"), 18);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall14"), 19);
     glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall15"), 20);
+
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "brick_room_texture"), 21);
     glUseProgram(0);
 }
 
@@ -2366,16 +2407,17 @@ void DrawSphere(glm::vec4 position, float radius, int index){
         * Matrix_Scale(radius, radius, radius);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(g_object_id_uniform, index + 10);
-    DrawVirtualObject("ball7");
+    DrawVirtualObject("the_sphere");
 
 }
+
 
 void DrawSphereCoords(int x, int y, int z, float radius){
     glm::mat4 model = Matrix_Translate(x,y,z) 
         * Matrix_Scale(radius, radius, radius);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
     glUniform1i(g_object_id_uniform, SPHERE);
-    DrawVirtualObject("ball7");
+    DrawVirtualObject("the_sphere");
 
 }
 

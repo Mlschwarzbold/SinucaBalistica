@@ -366,5 +366,60 @@ void PrintMatrixVectorProductDivW(glm::mat4 M, glm::vec4 v)
 }
 
 
+
+
+glm::mat4 Matrix_cross_product(glm::vec4 v)
+{
+
+    glm::mat4 M = Matrix(
+        0.0f, -v.z, v.y, 0.0f,
+        v.z, 0.0f, -v.x, 0.0f,
+        -v.y, v.x, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+
+    return M;
+}
+
+glm::mat4 Outer_product(glm::vec4 u, glm::vec4 v)
+{
+
+    glm::mat4 M = Matrix(
+        u.x * v.x, u.x * v.y, u.x * v.z, 0.0f,
+        u.y * v.x, u.y * v.y, u.y * v.z, 0.0f,
+        u.z * v.x, u.z * v.y, u.z * v.z, 0.0f,
+        0.0f,      0.0f,      0.0f,      1.0f
+    );
+
+    return M;
+}
+
+glm::mat4 Matrix_Axis_Rotation2(glm::vec4 axis, float angle)
+{
+
+    float x = axis.x;
+    float y = axis.y;
+    float z = axis.z;
+    float x2 = pow(x,2);
+    float y2 = pow(y,2);
+    float z2 = pow(z,2);
+    glm::mat4 M = Matrix(
+        x2 * (1 - cos(angle)) + cos(angle),         x * y * (1 - cos(angle)) - z * sin(angle),  x * z * (1 - cos(angle)) + y * sin(angle),      0.0f,
+        x * y * (1 - cos(angle)) + z * sin(angle),  y2 * (1 - cos(angle)) + cos(angle),         y * z * (1 - cos(angle)) - x * sin(angle),      0.0f,
+        x * z * (1 - cos(angle)) - y * sin(angle),  y * z * (1 - cos(angle)) + x * sin(angle),  z2 * (1 - cos(angle)) + cos(angle),             0.0f,
+        0.0f       ,                                0.0f       ,                                0.0f       ,                                    1.0f
+    );
+
+    return M;
+}
+
+glm::mat4 Matrix_Axis_Rotation(glm::vec4 axis, float angle)
+{
+
+    glm::vec4 u = normalize(axis);
+    float c = cos(angle);
+    float s = sin(angle);
+    return c * Matrix_Identity() + s * Matrix_cross_product(u) + (1 - c) * Outer_product(u, u);
+}
 #endif // _MATRICES_H
 // vim: set spell spelllang=pt_br :
