@@ -138,7 +138,6 @@ void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M,
 // Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
 // outras informações do programa. Definidas após main().
 void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
-void TextRendering_ShowEulerAngles(GLFWwindow* window);
 void TextRendering_ShowProjection(GLFWwindow* window);
 void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 
@@ -178,16 +177,10 @@ std::stack<glm::mat4>  g_MatrixStack;
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 float g_ScreenRatio = 1.0f;
 
-// Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
-float g_AngleX = 0.0f;
-float g_AngleY = 0.0f;
-float g_AngleZ = 0.0f;
-
 // "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
 // pressionado no momento atual. Veja função MouseButtonCallback().
 bool g_LeftMouseButtonPressed = false;
 bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
-bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição
@@ -196,14 +189,6 @@ bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mous
 float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 3.5f; // Distância da câmera para a origem
-
-// Variáveis que controlam rotação do antebraço
-float g_ForearmAngleZ = 0.0f;
-float g_ForearmAngleX = 0.0f;
-
-// Variáveis que controlam translação do torso
-float g_TorsoPositionX = 0.0f;
-float g_TorsoPositionY = 0.0f;
 
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
@@ -235,7 +220,6 @@ int global_Text_Line;
 float g_encacapada_anim_speed = 1.0f;
 float collision_t;
 
-bool g_SpacePressed = false;
 bool g_TapFlag = false;
 bool g_FreeCamera = true;
 
@@ -294,8 +278,6 @@ float ellapsed_time();
 // Collisions
 float t_colision_sphere_plane(PhysicsObject sphere, char axis, int direction, float offset);
 bool collideSpheres(PhysicsObject * o1, PhysicsObject * o2);
-//glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVecd, float * dist);
-
 
 //utility
 float distance(PhysicsObject o1, PhysicsObject o2);
@@ -343,7 +325,6 @@ class PhysicsObject {
     }
 
     void draw(){
-        //DrawSphere(position, radius, index);
             glm::mat4 model = Matrix_Translate(position.x, position.y, position.z) 
                 * Matrix_Scale(radius, radius, radius)
                 * rotation_matrix;
@@ -362,12 +343,8 @@ class PhysicsObject {
 
         
 
-        if(length(planarize(movement_vector)) > 0.1 /*&& pow(movement_vector.x,2 ) > 0.1f && pow(movement_vector.z, 2) > 0.1f */){
-            
-            //rotateByAxis(up_vector, 3.14/6);
-            glm::vec4 rotation_axis = normalize(crossproduct(up_vector, movement_vector));
-            float angle = 1 * length(movement_vector); // math
-            //std::cout << length(rotation_axis) << std::endl;
+        if(length(planarize(movement_vector)) > 0.1 ){
+            // math
             
             glm::vec4 weird_vector = normalize(glm::vec4(1.0f, 2.0f, 1.0f, 0.0f));
 
@@ -381,7 +358,6 @@ class PhysicsObject {
         float directional_loss = 0.5;
         if(axis == 'x'){
             movement_vector.x = -movement_vector.x * directional_loss;
-            //encacapar(glm::vec4(0.0f,0.0f,0.0f,1.0f));
         } else if (axis == 'y'){
             movement_vector.y = -movement_vector.y * directional_loss;
         }else if (axis == 'z'){
@@ -394,7 +370,6 @@ class PhysicsObject {
     void reflectAxis(char axis, float directional_loss){
         if(axis == 'x'){
             movement_vector.x = -movement_vector.x * directional_loss;
-            //encacapar(glm::vec4(0.0f,0.0f,0.0f,1.0f));
         } else if (axis == 'y'){
             movement_vector.y = -movement_vector.y * directional_loss;
         }else if (axis == 'z'){
@@ -408,13 +383,6 @@ class PhysicsObject {
         glm::vec4 normal = normalize(vector);
         glm::vec4 new_movement_vector = movement_vector - 2 * dotproduct(movement_vector, normal) * normal;
         movement_vector = new_movement_vector;
-    }
-
-
-    void collideNormal(glm::vec4 point, glm::vec4 vector){
-        glm::vec4 normal = normalize(vector);
-        
-        
     }
 
     void collideWithBounds(float xPlusBound, float xMinusBound, float zPlusBound, float zMinusBound, float yPlusBound, float yMinusBound){
@@ -446,15 +414,11 @@ class PhysicsObject {
 
         // Floor collision
         //if is in a hole, ignore regular floor collision
-        //bool inHole = collideWithHole();
-
-
         
         if((position.y - radius < tableHeight)){
             position.y = position.y + (tableHeight - position.y + radius);
             reflectAxis('y', 0.2);
         }
-
     }
 
     
@@ -471,7 +435,6 @@ class PhysicsObject {
 
             
             if( dist(planarize(position) , planarize(hole))< (hole_width - radius)){
-                //printf("No collisions\n");
             } else {
                 glm::vec4 dir = normalize( planarize(position) - planarize(hole));
                 glm::vec4 contact = hole + dir * hole_width;
@@ -487,7 +450,6 @@ class PhysicsObject {
                 
 
             }
-            //printf("Ball inside hole\n");
             return true;
         } else {
             // Not touching hole
@@ -546,57 +508,11 @@ class Rect {
     glm::vec4 toFirstPerson(){
         return glm::vec4(x, 1.0f, z, 1.0f);
     }
-
-    void toRect(glm::vec4 pos){
-        x = pos.x;
-        z = pos.z;
-    }
-
-
-    void collideWithRect(Rect rect){
-        float XPlus = x + x_width;
-        float XMinus = x - x_width;
-        float ZPlus = z + z_width;
-        float ZMinus = z - z_width;
-
-
-        float rXPlus = rect.x + rect.x_width;
-        float rXMinus = rect.x - rect.x_width;
-        float rZPlus = rect.z + rect.z_width;
-        float rZMinus = rect.z - rect.z_width;
-
-        float diff = rXPlus - XMinus;
-        if(diff < 0){
-            x = x + diff;
-            printf("x+: %f \n", diff);
-        }
-    /*
-        diff = rXMinus - XPlus;
-        if(diff > 0){
-            x = x - diff;
-            printf("x+: %f \n", diff);
-        }
-
-        diff = rZPlus - ZMinus;
-        if(diff < 0){
-            z = z + diff;
-            printf("z+: %f \n", diff);
-        }
-
-        diff = rZMinus - ZPlus;
-        if(diff > 0){
-            z = z - diff;
-            printf("z-: %f \n", diff);
-        }*/
-    }
-
 };
-
 
 
 Rect playerRect = Rect(-3.0f, 0.0f, 0.3f, 0.3f);
 Rect tableRect = Rect(0.0f, 0.0f, 2.0f, 2.0f);
-
 
 
 int main(int argc, char* argv[])
@@ -677,11 +593,9 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     // Carregamos duas imagens para serem utilizadas como textura
-    LoadTextureImage("../../data/tc-earth_daymap_surface.jpg");      // TextureImage0
-    LoadTextureImage("../../data/tc-earth_nightmap_citylights.gif"); // TextureImage1
-    LoadTextureImage("../../data/P88_gloss.jpg"); // TextureImage2:
-    LoadTextureImage("../../data/textures/pool table low_POOL TABLE_BaseColor.png"); // TextureImage3:
-    LoadTextureImage("../../data/P88_gloss.jpg"); // TextureImage4:
+    LoadTextureImage("../../data/textures/P88_gloss.jpg"); // TextureTableTop:
+    LoadTextureImage("../../data/textures/pool table low_POOL TABLE_BaseColor.png"); // TexturePoolTable:
+    LoadTextureImage("../../data/textures/P88_gloss.jpg"); // TextureObjUnkown:
 
     LoadTextureImage("../../data/textures/balls/BallCue.jpg"); // TextureCueBall:
     LoadTextureImage("../../data/textures/balls/Ball1.jpg"); // TextureBall1:
@@ -708,14 +622,6 @@ int main(int argc, char* argv[])
     ObjModel spheremodel("../../data/sphere.obj");
     ComputeNormals(&spheremodel);
     BuildTrianglesAndAddToVirtualScene(&spheremodel);
-
-    /*ObjModel bunnymodel("../../data/bunny.obj");
-    ComputeNormals(&bunnymodel);
-    BuildTrianglesAndAddToVirtualScene(&bunnymodel);
-
-    ObjModel planemodel("../../data/plane.obj");
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);*/
 
     ObjModel gunmodel("../../data/Gun.obj");
     ComputeNormals(&gunmodel);
@@ -794,34 +700,6 @@ int main(int argc, char* argv[])
 //==========================================================================||
     float run_time = (float)glfwGetTime();
 
-
-
-    
-    
-    /*
-    PhysicsObject b2 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.0, 0.0, 0.0);
-    b2.setMovementVector(0.0f, 0.0f, 0.1f);
-
-    PhysicsObject b3 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.5, 0.0, 0.0);
-    b3.setMovementVector(0.0f, 0.0f, 0.1f);
-
-    PhysicsObject b4 = PhysicsObject("ball", g_ball_radius, 10.0f, -0.3, 0.0, 0.4);
-    b4.setMovementVector(0.0f, 0.0f, 0.1f);
-
-    PhysicsObject b5 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.3, 0.0, 0.4);
-    b5.setMovementVector(0.0f, 0.0f, 0.1f);
-
-    PhysicsObject b6 = PhysicsObject("ball", g_ball_radius, 10.0f, -0.3, 0.0, -0.4);
-    b6.setMovementVector(0.0f, 0.0f, 0.1f);
-
-    PhysicsObject b7 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.3, 0.0, -0.4);
-    b7.setMovementVector(0.0f, 0.0f, 0.1f); */
-    
-   
-
-    
-
-
     std::list<glm::vec4> Holes;
     Holes.push_back(glm::vec4(xPlusBound, yMinusBound, zPlusBound, 1.0f));
     Holes.push_back(glm::vec4(xPlusBound, yMinusBound, zMinusBound, 1.0f));
@@ -829,34 +707,7 @@ int main(int argc, char* argv[])
     Holes.push_back(glm::vec4(xMinusBound, yMinusBound, zMinusBound, 1.0f));
     Holes.push_back(glm::vec4((xPlusBound + xMinusBound) / 2, yMinusBound, zPlusBound, 1.0f));
     Holes.push_back(glm::vec4((xPlusBound + xMinusBound) / 2, yMinusBound, zMinusBound, 1.0f));
-
-
-
-
-
-    float tableXPlus = 2.0f;
-    float tableXMinus = -2.0f;
-    float tableZPlus = 2.0f;
-    float tableZMinus = -2.0f;
-
-    
-    
-    
-    /*
-    PhysicsObjects.push_back(b2);
-    PhysicsObjects.push_back(b3);
-    PhysicsObjects.push_back(b4);
-    PhysicsObjects.push_back(b5);
-    PhysicsObjects.push_back(b6);
-    PhysicsObjects.push_back(b7);
-    */
-    
-    //PhysicsObject ball = PhysicsObject("ball", 0.2f, 10, 0.3, 0.0, -0.4);
-
-    //resetBalls(PhysicsObjects, 0.0f, yMinusBound, 0.0f);
-    
-
-
+  
     float x = -0.3f;
     float y = yMinusBound;
     float z = (zPlusBound + zMinusBound) /2;
@@ -873,34 +724,12 @@ int main(int argc, char* argv[])
             PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
             b.setMovementVector(0.0f, 0.0f, 0.1f);
             PhysicsObjects.push_back(b);
-            //std::cout << "BALLS" << std::endl;
-
 
             z = z + diameter ;
         }
          z = z - (diameter * (i + 0.5f));
         x = x - diameter * sqrt(3) / 2;
     }
-    /*
-    for(int j = 0; j < 8; j++){
-        for(int i = 0; i < 8; i++){
-            for(int k = 0; k < 8; k++){
-
-                float r = 0.2f;
-                ball = PhysicsObject("ball", r, 1.0f, -0.7 + (i * (2 * r + 0.01f)), -0.3 + (k * (2 * r + 0.01f)), -0.7 + (j * (2 * r + 0.01f)));
-                ball.setMovementVector(0.0f, 0.0f, 0.00001f);
-                PhysicsObjects.push_back(ball);
-            }
-        }
-    }*/
-    
-    
-
-
-
-
-
-
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -939,9 +768,6 @@ int main(int argc, char* argv[])
 //==========================================================================||
 
 
-        
-
-
         if(!g_FreeCamera){
             if(cameraBezierT < 1){
                 cameraBezierT = cameraBezierT + delta_t;
@@ -968,11 +794,7 @@ int main(int argc, char* argv[])
             } else {
                 g_zoomAnim = 0;
             }
-        }
-
-        //printf("bezier: %f \n", cameraBezierT);
-        
-
+        }     
         
         g_Camera_LookAt = PhysicsObjects.front().position; 
 
@@ -997,20 +819,6 @@ int main(int argc, char* argv[])
 
         camera_position_c  = g_FinalCameraCoords;
         camera_lookat_l    = g_FinalCameraLookAtCoords;
-        /*
-        if(!g_FreeCamera){
-            //camera_position_c  = g_LookAt_Coords;
-            //camera_lookat_l    = g_Camera_LookAt;
-            
-        } else {
-            camera_position_c  = g_POV_Coords; // Ponto "c", centro da câmera
-            camera_lookat_l    = g_POV_LookAt;
-        }*/
-
-        
-        
-        //glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        //look-at first ball
 
         glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
@@ -1063,10 +871,6 @@ int main(int argc, char* argv[])
         }
         
         
-
-
-
-
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
         glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
@@ -1083,7 +887,7 @@ int main(int argc, char* argv[])
         {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = (3.141592 / 3.0f) * Bezier(1, 1 , 0.3,  0.3, g_zoomAnim); // / LERP(r, 1, cameraBezierT);
+            float field_of_view = (3.141592 / 3.0f) * Bezier(1, 1 , 0.3,  0.3, g_zoomAnim); 
 
             projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
         }
@@ -1111,40 +915,11 @@ int main(int argc, char* argv[])
 
         
         #define SPHERE 0
-        //#define BUNNY  1
-        //#define PLANE  2
         #define GUN 3
         #define TABLE_TOP 4
         #define UNKNOWN -2
         #define BRICK_ROOM 21
-        #define AK47 26
-
-
-        // Desenhamos o modelo da esfera
-        /*model = Matrix_Translate(-1.0f,0.0f,0.0f)
-              * Matrix_Rotate_Z(0.6f)
-              * Matrix_Rotate_X(0.2f)
-              * Matrix_Rotate_Y(g_AngleY + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, SPHERE);
-        //DrawVirtualObject("the_sphere");
-
-        // Desenhamos o modelo do coelho
-        model = Matrix_Translate(1.0f,0.0f,0.0f)
-              * Matrix_Rotate_X(g_AngleX + (float)glfwGetTime() * 0.1f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, BUNNY);
-        //DrawVirtualObject("the_bunny");
-
-        // Desenhamos o plano do chão
-        model = Matrix_Translate(0.0f,-1.1f,0.0f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        //DrawVirtualObject("the_plane");*/
-
-
-        
-
+        #define AK47 26    
 
         // Desenhamos A mesa
         model = Matrix_Translate(0.0f,0.0f,0.0f) * Matrix_Scale(1.0f, 1.0f, 1.0f);
@@ -1152,12 +927,9 @@ int main(int argc, char* argv[])
         glUniform1i(g_object_id_uniform, TABLE_TOP);
         DrawVirtualObject("Base_low_Mesh.024");
         DrawVirtualObject("Box14_low_Mesh.022");
-        //DrawVirtualObject("chok_low_Mesh.021");
         DrawVirtualObject("feet_low_Mesh.020");
         DrawVirtualObject("legs_low_Mesh.019");
         DrawVirtualObject("rubber_low_Mesh.018");
-        //DrawVirtualObject("stick_low_Mesh.016");
-        //DrawVirtualObject("triangle_low_Mesh.015");
         DrawVirtualObject("tabletop_low_Mesh.013");
 
 
@@ -1246,53 +1018,6 @@ int main(int argc, char* argv[])
             DrawVirtualObject("polySurface228_0");
             DrawVirtualObject("polySurface229_0");
         }
-        
-
-
-
-        //
-        //model = Matrix_Translate(0.0f,0.0f,0.0f);
-        //glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        //glUniform1i(g_object_id_uniform, UNKNOWN);
-        //DrawVirtualObject("the_room");
-
-        // Desenhamos o modelo do chao
-        /*
-        model = Matrix_Translate(.0f,yMinusBound,0.0f)
-         * Matrix_Scale(2.0f, 1.0f, 2.0f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
-
-        //parede
-        model = Matrix_Translate(0.0f,-0.1f,zMinusBound)
-         * Matrix_Scale(2.0f, 1.2f, 1.0f)
-         * Matrix_Rotate_X(3.14/2);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
-
-        model = Matrix_Translate(0.0f,-0.1f,zPlusBound)
-         * Matrix_Scale(2.0f, 1.2f, 1.0f)
-         * Matrix_Rotate_X(-3.14/2);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
-
-        model = Matrix_Translate(xPlusBound,-0.1f,0.0f)
-         * Matrix_Scale(0.2f, 1.2f, 2.0f)
-         * Matrix_Rotate_Z(3.14/2);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
-
-        model = Matrix_Translate(xMinusBound,-0.1f,0.0f)
-         * Matrix_Scale(0.2f, 1.2f, 2.0f)
-         * Matrix_Rotate_Z(-3.14/2);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, PLANE);
-        DrawVirtualObject("the_plane");
-    */
 
 //==========================================================================||
 //||                                                                        ||
@@ -1313,11 +1038,9 @@ int main(int argc, char* argv[])
 
         for(PhysicsObject &object : PhysicsObjects){
             object.draw();
-            //object.rotateByAxis(camera_view_vector ,delta_t);
 
             bool inHole = false;
             if(object.index != 0) for(glm::vec4 hole : Holes){
-                // or ( inHole, collideWithHoles)
                 // returs tru if it is in currently tested hole
                 // of if one of the previous tests was true]
                 
@@ -1338,10 +1061,6 @@ int main(int argc, char* argv[])
         for(PhysicsObject &o1 : PhysicsObjects){
             for(PhysicsObject &o2 : PhysicsObjects){
                 if(&o1 != &o2 && &o1 < &o2){
-                //    if(distance(o1,o2) < o1.radius + o2.radius){
-                //        glm::vec4 vector = getVectorBetween(o1, o2);
-                //        o1.reflectNormal(vector);
-                //  
                     if(collideSpheres(&o1, &o2)){
                         ma_sound_stop(&clack_sound);
                         ma_sound_seek_to_pcm_frame(&clack_sound, 0);
@@ -1354,14 +1073,6 @@ int main(int argc, char* argv[])
                 
             }
         }
-
-        // DRAW THE HOLES
-        /*
-        for(glm::vec4 hole : Holes){
-            DrawSphere(hole, hole_width);
-        }
-        */
-
        
 
         if(g_recoilAnim > 0){
@@ -1377,15 +1088,13 @@ int main(int argc, char* argv[])
         }
 
 
-
-
         // Makeshift crosshair
         DrawSphere(camera_position_c + camera_view_vector * 0.2f, 0.001f, 0);
 
 
         bool is_shooting = false;
 
-        if(g_LeftMouseButtonPressed & gunType == 1){
+        if(g_LeftMouseButtonPressed && (gunType == 1)){
             if(g_ak_downtime <= 0){
                 g_ak_downtime = g_ak_downtime_const;
                 g_recoilAnim = 1;
@@ -1401,19 +1110,9 @@ int main(int argc, char* argv[])
         }
 
         if(is_shooting){
-            //ma_sound_set_volume(&gunshot_sound, 0.1f);
             ma_sound_stop(&gunshot_sound);
             ma_sound_seek_to_pcm_frame(&gunshot_sound, 0);
             ma_sound_start(&gunshot_sound);
-
-            
-            
-            
-                    
-
-
-
-            //PhysicsObjects.front().movement_vector = planarize(0.0f * PhysicsObjects.front().movement_vector + 6.0f * normalize(camera_view_vector));
             
             float min_dist = -1.0f;
 
@@ -1421,20 +1120,15 @@ int main(int argc, char* argv[])
             PhysicsObject * rayCastSelectedObjectPointer;
             for(PhysicsObject &object : PhysicsObjects){
                 rayCastPoint = p_collision_sphere_ray(object.position, object.radius, camera_position_c, camera_view_vector, &rayCastDist);
-                
-                //printf("dist: %f, min dist:  %f\n", rayCastDist, min_dist);
 
-                if(rayCastDist < min_dist && (rayCastDist >= 0) ||( min_dist > -1.1f && min_dist < -0.9f )){
-                    //std::cout << "Passed test" << std::endl;
+                if(((rayCastDist < min_dist) && (rayCastDist >= 0)) ||( min_dist > -1.1f && min_dist < -0.9f )){
                     min_dist = rayCastDist;       
                     rayCastPointClosest = rayCastPoint;
                     rayCastSelectedObjectPointer = &object;           
                 }
             }
 
-            //printf("Max dist: %f\n", min_dist);
             if(min_dist >= 0.0f){ // testa se o raycast encontrou algum objeto
-                //printf("Max dist inside if: %f\n", min_dist);
                 DrawSphere(rayCastPointClosest, 0.03f, 0);
                 glm::vec4 impactVector = -5.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
                 float multiplier;
@@ -1454,62 +1148,9 @@ int main(int argc, char* argv[])
 
                 ma_sound_stop(&clack_sound);
                 ma_sound_seek_to_pcm_frame(&clack_sound, 0);
-                ma_sound_start(&clack_sound);
-                                                                      
-                
+                ma_sound_start(&clack_sound);   
             }
         } 
-
-        
-
-        /*
-        if(distance(b1,b2) < b1.radius + b2.radius){
-            glm::vec4 vector = getVectorBetween(b1, b2);
-            b1.reflectNormal(vector);
-            vector = getVectorBetween(b2, b1);
-            b2.reflectNormal(vector);
-        }*/
-
-
-        /*
-        float alloted_frame_time = delta_t;
-        while(alloted_frame_time > 0){
-            //b1 collision with +x wall
-            collision_t = t_colision_sphere_plane(b1, 1, 'x', 2.0f);
-            if(collision_t >= 0){
-                if(collision_t > alloted_frame_time){
-                    b1.advance_time(alloted_frame_time);
-                    alloted_frame_time = 0;
-                } else {
-                    b1.advance_time(collision_t);
-                    b1.setMovementVector(-0.4f, 0.0f, 0.0f);
-                    alloted_frame_time = alloted_frame_time - collision_t;
-                }
-            } else {
-                 b1.advance_time(alloted_frame_time);
-                 alloted_frame_time = 0;   
-            }
-            
-        }
-        
-
-        
-        b1.draw();
-
-        if(b1.position.z + b1.radius > 30){
-            b1.setMovementVector(0.0f, 0.0f, -0.3f);
-        }
-
-        //const char * = std::sprintf("%f sec", collision_t);
-        //TextRendering_PrintBuffer(window, format("%0.2f sec", collision_t));
-        TextRendering_PrintBuffer(window, "Sample text");
-        */
-       
-        
-
-        // Imprimimos na tela os ângulos de Euler que controlam a rotação do
-        // terceiro cubo.
-        TextRendering_ShowEulerAngles(window);
 
         // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
         TextRendering_ShowProjection(window);
@@ -1673,30 +1314,27 @@ void LoadShadersFromFiles()
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     glUseProgram(g_GpuProgramID);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage0"), 0);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage1"), 1);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage2"), 2);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage3"), 3);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureImage4"), 4);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureCueBall"), 5);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall1"), 6);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall2"), 7);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall3"), 8);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall4"), 9);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall5"), 10);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall6"), 11);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall7"), 12);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall8"), 13);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall9"), 14);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall10"), 15);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall11"), 16);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall12"), 17);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall13"), 18);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall14"), 19);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall15"), 20);
-
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "brick_room_texture"), 21);
-    glUniform1i(glGetUniformLocation(g_GpuProgramID, "ak47_texture"), 22);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureTableTop"), 0);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TexturePoolTable"), 1);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureObjUnkown"), 2);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureCueBall"), 3);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall1"), 4);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall2"), 5);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall3"), 6);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall4"), 7);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall5"), 8);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall6"), 9);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall7"), 10);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall8"), 11);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall9"), 12);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall10"), 13);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall11"), 14);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall12"), 15);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall13"), 16);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall14"), 17);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "TextureBall15"), 18);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "brick_room_texture"), 19);
+    glUniform1i(glGetUniformLocation(g_GpuProgramID, "ak47_texture"), 20);
     glUseProgram(0);
 }
 
@@ -1819,7 +1457,6 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel* model)
                 const float vx = model->attrib.vertices[3*idx.vertex_index + 0];
                 const float vy = model->attrib.vertices[3*idx.vertex_index + 1];
                 const float vz = model->attrib.vertices[3*idx.vertex_index + 2];
-                //printf("tri %d vert %d = (%.2f, %.2f, %.2f)\n", (int)triangle, (int)vertex, vx, vy, vz);
                 model_coefficients.push_back( vx ); // X
                 model_coefficients.push_back( vy ); // Y
                 model_coefficients.push_back( vz ); // Z
@@ -2138,22 +1775,6 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // variável abaixo para false.
         g_RightMouseButtonPressed = false;
     }
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS)
-    {
-        // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
-        // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
-        // g_MiddleMouseButtonPressed como true, para saber que o usuário está
-        // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-        g_MiddleMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE)
-    {
-        // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
-        // variável abaixo para false.
-        g_MiddleMouseButtonPressed = false;
-    }
 }
 
 // Função callback chamada sempre que o usuário movimentar o cursor do mouse em
@@ -2211,37 +1832,11 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 
     if (g_RightMouseButtonPressed)
     {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
-    
-        // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_ForearmAngleZ -= 0.01f*dx;
-        g_ForearmAngleX += 0.01f*dy;
-    
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
         g_LastCursorPosX = xpos;
         g_LastCursorPosY = ypos;
     }
-
-    if (g_MiddleMouseButtonPressed)
-    {
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        float dx = xpos - g_LastCursorPosX;
-        float dy = ypos - g_LastCursorPosY;
-    
-        // Atualizamos parâmetros da antebraço com os deslocamentos
-        g_TorsoPositionX += 0.01f*dx;
-        g_TorsoPositionY -= 0.01f*dy;
-    
-        // Atualizamos as variáveis globais para armazenar a posição atual do
-        // cursor como sendo a última posição conhecida do cursor.
-        g_LastCursorPosX = xpos;
-        g_LastCursorPosY = ypos;
-    }
-
-    
 }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
@@ -2276,48 +1871,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
-
-    // O código abaixo implementa a seguinte lógica:
-    //   Se apertar tecla X       então g_AngleX += delta;
-    //   Se apertar tecla shift+X então g_AngleX -= delta;
-    //   Se apertar tecla Y       então g_AngleY += delta;
-    //   Se apertar tecla shift+Y então g_AngleY -= delta;
-    //   Se apertar tecla Z       então g_AngleZ += delta;
-    //   Se apertar tecla shift+Z então g_AngleZ -= delta;
-
-    float delta = 3.141592 / 16; // 22.5 graus, em radianos.
-
-    if (key == GLFW_KEY_X && action == GLFW_PRESS)
-    {
-        g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-
-    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
-    {
-        g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-    if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-    {
-        g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-    }
-
-    // Se o usuário apertar a tecla espaço, resetamos os ângulos de Euler para zero.
-    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
-    {
-        g_AngleX = 0.0f;
-        g_AngleY = 0.0f;
-        g_AngleZ = 0.0f;
-        g_ForearmAngleX = 0.0f;
-        g_ForearmAngleZ = 0.0f;
-        g_TorsoPositionX = 0.0f;
-        g_TorsoPositionY = 0.0f;
-        g_SpacePressed = true;
-        
-    }
-    if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
-    {
-        g_SpacePressed = false;
-    }
 
     if (key == GLFW_KEY_Y && action == GLFW_RELEASE)
     {
@@ -2365,9 +1918,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     }
     if (key == GLFW_KEY_F && action == GLFW_PRESS)
     {
-        g_FreeCamera = !g_FreeCamera;
-        
-        //cameraBezierT = 0;
+        g_FreeCamera = !g_FreeCamera;   
     
     }
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
@@ -2487,21 +2038,6 @@ void TextRendering_ShowModelViewProjection(
 
     TextRendering_PrintString(window, " Viewport matrix           NDC      In Pixel Coords.", -1.0f, 1.0f-25*pad, 1.0f);
     TextRendering_PrintMatrixVectorProductMoreDigits(window, viewport_mapping, p_ndc, -1.0f, 1.0f-26*pad, 1.0f);
-}
-
-// Escrevemos na tela os ângulos de Euler definidos nas variáveis globais
-// g_AngleX, g_AngleY, e g_AngleZ.
-void TextRendering_ShowEulerAngles(GLFWwindow* window)
-{
-    if ( !g_ShowInfoText )
-        return;
-
-    float pad = TextRendering_LineHeight(window);
-
-    char buffer[80];
-    snprintf(buffer, 80, "Euler Angles rotation matrix = Z(%.2f)*Y(%.2f)*X(%.2f)\n", g_AngleZ, g_AngleY, g_AngleX);
-
-    TextRendering_PrintString(window, buffer, -1.0f+pad/10, -1.0f+2*pad/10, 1.0f);
 }
 
 // Escrevemos na tela qual matriz de projeção está sendo utilizada.
@@ -2761,23 +2297,23 @@ float t_colision_sphere_plane(PhysicsObject sphere, char axis, int direction, fl
     
     float dt = -1;
     if(direction == 1){
-        if(axis = 'x'){
+        if(axis == 'x'){
             dt = (offset - sphere.position.x + sphere.radius) / sphere.movement_vector.x;
         }
-        if(axis = 'y'){
+        if(axis == 'y'){
             dt = (offset - sphere.position.y + sphere.radius) / sphere.movement_vector.y;        
             }
-        if(axis = 'z'){
+        if(axis == 'z'){
             dt = (offset - sphere.position.z + sphere.radius) / sphere.movement_vector.z;        
             }
     } else {
-        if(axis = 'x'){
+        if(axis == 'x'){
             dt = (offset - sphere.position.x - sphere.radius) / sphere.movement_vector.x;        
             }
-        if(axis = 'y'){
+        if(axis == 'y'){
             dt = (offset - sphere.position.y - sphere.radius) / sphere.movement_vector.y;        
             }
-        if(axis = 'z'){
+        if(axis == 'z'){
             dt = (offset - sphere.position.z - sphere.radius) / sphere.movement_vector.z;        
             }
     }
@@ -2823,10 +2359,6 @@ bool collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
     if(inset > 0){
         // Collision detected, now deal with new vectors
 
-        //std::cout << "COLLLIIIIIIIIIIIIIIIISION" << std::endl;
-
-
-
         glm::vec4 v1 = o1->movement_vector;
         glm::vec4 v2 = o2->movement_vector;
         glm::vec4 x1 = o1->position;
@@ -2859,9 +2391,6 @@ bool collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
         o1->movement_vector = new_v1;
         o2->movement_vector = new_v2;
 
-        //o1->advance_time(0.001);
-        //o2->advance_time(0.001);
-
         glm::vec4 o1_out_vector = normalize(o1->position - o2->position);
         o1->position = o1->position + o1_out_vector * (inset /2);
         o2->position = o2->position + o1_out_vector * (- inset /2);
@@ -2869,34 +2398,6 @@ bool collideSpheres(PhysicsObject * o1, PhysicsObject * o2){
     } 
     return false;
 }
-
-/*
-glm::vec4 p_collision_sphere_ray(glm::vec4 spherePos, float radius, glm::vec4 rayPos, glm::vec4 rayVec, float * dist){
-
-    glm::vec4 rayPosCentered = rayPos - spherePos;
-
-
-    float a = (pow(rayVec.x, 2) + pow(rayVec.y, 2) + pow(rayVec.z, 2));
-    float b = (2 * (rayPosCentered.x * rayVec.x + rayPosCentered.y * rayVec.y + rayPosCentered.z * rayVec.z));
-    float c = pow((rayPosCentered.x), 2) +  pow((rayPosCentered.y), 2) +  pow((rayPosCentered.z), 2)  - pow(radius,2);
-
-    float delta = pow(b, 2) - 4 * a * c;
-
-    float dt;
-    glm::vec4 contact;
-
-    if(delta >= 0){
-        dt = (-b - sqrt(delta)) / (2 *a);
-        contact = rayPos + rayVec * dt;
-    } else {
-        dt = -1;
-        contact = glm::vec4(-1.0f, -1.0f, -1.0f, 1.0f);
-    }
-    
-    *dist = dt * norm(rayVec);
-    return contact;
-}*/
-
 
 glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t){
 
@@ -2970,9 +2471,6 @@ void resetBalls(){
                 PhysicsObjects.push_back(b);
 
             }
-            
-
-
 
             z = z + diameter ;
         }

@@ -23,8 +23,6 @@ uniform mat4 projection;
 // Identificador que define qual objeto está sendo desenhado no momento
 #define UNKNOWN -2
 #define SPHERE 0
-#define BUNNY  1
-#define PLANE  2
 #define GUN 3
 #define TABLE_TOP 4
 #define BRICK_ROOM 21
@@ -36,11 +34,9 @@ uniform vec4 bbox_min;
 uniform vec4 bbox_max;
 
 // Variáveis para acesso das imagens de textura
-uniform sampler2D TextureImage0;
-uniform sampler2D TextureImage1;
-uniform sampler2D TextureImage2;
-uniform sampler2D TextureImage3;
-uniform sampler2D TextureImage4;
+uniform sampler2D TextureTableTop;
+uniform sampler2D TexturePoolTable;
+uniform sampler2D TextureObjUnkown;
 uniform sampler2D TextureCueBall;
 uniform sampler2D TextureBall1;
 uniform sampler2D TextureBall2;
@@ -139,30 +135,7 @@ void main()
         Ka = vec3(0.4,0.2,0.04);
         q = 1.0;
     }
-    else if ( object_id == BUNNY)
-    {
-        // PREENCHA AQUI as coordenadas de textura do coelho, computadas com
-        // projeção planar XY em COORDENADAS DO MODELO. Utilize como referência
-        // o slides 99-104 do documento Aula_20_Mapeamento_de_Texturas.pdf,
-        // e também use as variáveis min*/max* definidas abaixo para normalizar
-        // as coordenadas de textura U e V dentro do intervalo [0,1]. Para
-        // tanto, veja por exemplo o mapeamento da variável 'p_v' utilizando
-        // 'h' no slides 158-160 do documento Aula_20_Mapeamento_de_Texturas.pdf.
-        // Veja também a Questão 4 do Questionário 4 no Moodle.
-
-        float minx = bbox_min.x;
-        float maxx = bbox_max.x;
-
-        float miny = bbox_min.y;
-        float maxy = bbox_max.y;
-
-        float minz = bbox_min.z;
-        float maxz = bbox_max.z;
-
-        U = (position_model.x - minx) / (maxx - minx);
-        V = (position_model.y - miny) / (maxy - miny);
-    }
-    else if ( object_id == PLANE || object_id == TABLE_TOP || object_id == GUN || object_id == BRICK_ROOM)
+    else if ( object_id == TABLE_TOP || object_id == GUN || object_id == BRICK_ROOM)
     {
         // Coordenadas de textura do plano, obtidas do arquivo OBJ.
         U = texcoords.x;
@@ -236,76 +209,54 @@ void main()
         q = 1.0;
     }
 
-    // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
+    // Obtemos a refletância difusa a partir da leitura das imagens de Textura
     vec3 Kd0;
-    vec3 Kd1;
+
     if ( object_id == GUN )
     {
-        Kd0 = texture(TextureImage2, vec2(U,V)).rgb;
-        Kd1 = texture(TextureImage2, vec2(U,V)).rgb;
+        Kd0 = texture(TextureTableTop, vec2(U,V)).rgb;
     } else if ( object_id == TABLE_TOP ){
-        Kd0 = texture(TextureImage3, vec2(U,V)).rgb;
-        Kd1 = texture(TextureImage3, vec2(U,V)).rgb;
+        Kd0 = texture(TexturePoolTable, vec2(U,V)).rgb;
     } else if ( object_id == UNKNOWN ){
-        Kd0 = texture(TextureImage4, vec2(U,V)).rgb;
-        Kd1 = texture(TextureImage4, vec2(U,V)).rgb;
+        Kd0 = texture(TextureObjUnkown, vec2(U,V)).rgb;
     } else if ( object_id == BRICK_ROOM ){
         Kd0 = texture(brick_room_texture, vec2(U,V)).rgb;
-        Kd1 = texture(brick_room_texture, vec2(U,V)).rgb;
     } else if (object_id == 10 ){
         Kd0 = texture(TextureCueBall, vec2(U,V)).rgb;
-        Kd1 = texture(TextureCueBall, vec2(U,V)).rgb;
     } else if (object_id == 11 ){
         Kd0 = texture(TextureBall1, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall1, vec2(U,V)).rgb;
     } else if (object_id == 12 ){
         Kd0 = texture(TextureBall2, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall2, vec2(U,V)).rgb;
     } else if (object_id == 13 ){
         Kd0 = texture(TextureBall3, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall3, vec2(U,V)).rgb;
     } else if (object_id == 14 ){
         Kd0 = texture(TextureBall4, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall4, vec2(U,V)).rgb;
     } else if (object_id == 15 ){
         Kd0 = texture(TextureBall5, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall5, vec2(U,V)).rgb;
     } else if (object_id == 16 ){
         Kd0 = texture(TextureBall6, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall6, vec2(U,V)).rgb;
     } else if (object_id == 17 ){
         Kd0 = texture(TextureBall7, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall7, vec2(U,V)).rgb;
     } else if (object_id == 18 ){
         Kd0 = texture(TextureBall8, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall8, vec2(U,V)).rgb;
     } else if (object_id == 19 ){
         Kd0 = texture(TextureBall9, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall9, vec2(U,V)).rgb;
     } else if (object_id == 20 ){
         Kd0 = texture(TextureBall10, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall10, vec2(U,V)).rgb;
     } else if (object_id == 21 ){
         Kd0 = texture(TextureBall11, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall11, vec2(U,V)).rgb;
     } else if (object_id == 22 ){
         Kd0 = texture(TextureBall12, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall12, vec2(U,V)).rgb;
     } else if (object_id == 23 ){
         Kd0 = texture(TextureBall13, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall13, vec2(U,V)).rgb;
     } else if (object_id == 24 ){
         Kd0 = texture(TextureBall14, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall14, vec2(U,V)).rgb;
     } else if (object_id == 25 ){
         Kd0 = texture(TextureBall15, vec2(U,V)).rgb;
-        Kd1 = texture(TextureBall15, vec2(U,V)).rgb;
     } else if ( object_id == AK47 ){
         Kd0 = texture(ak47_texture, vec2(U,V)).rgb;
-        Kd1 = texture(ak47_texture, vec2(U,V)).rgb;
     } else {
         Kd0 = texture(brick_room_texture, vec2(U,V)).rgb;
-        Kd1 = texture(brick_room_texture, vec2(U,V)).rgb;
     }
     
     // Espectro da fonte de iluminação
@@ -327,9 +278,9 @@ void main()
     if ( object_id == BRICK_ROOM) {
         // Equação de Iluminação
         float lambert = max(0,dot(n,l));
-        color.rgb = Kd0 * (pow(lambert,1) + 0.01) + Kd1 * (1 - (pow(lambert, 0.2)) + 0.01);
+        color.rgb = Kd0 * (pow(lambert,1) + 0.01) + Kd0 * (1 - (pow(lambert, 0.2)) + 0.01);
     } else if ( object_id >= 10 && object_id <= 25 ) {
-        color.rgb = Kd0 * (pow(lamber_gourad,1) + 0.01) + Kd1 * (1 - (pow(lamber_gourad, 0.2)) + 0.01);
+        color.rgb = Kd0 * (pow(lamber_gourad,1) + 0.01) + Kd0 * (1 - (pow(lamber_gourad, 0.2)) + 0.01);
     }
     else {
         color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
