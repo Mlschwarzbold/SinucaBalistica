@@ -2961,10 +2961,10 @@ void resetBalls(){
     b1.setMovementVector(0.0f, 0.1f, 0.0f);
     PhysicsObjects.push_back(b1);
 
-    for(int i = 0; i <9; i++){
+    for(int i = 0; i <5; i++){
         for(int j = 0; j < i; j++){
 
-            for(int k = 0; k < 5; k++){
+            for(int k = 0; k < 1; k++){
                 PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, k * y, z);
                 b.setMovementVector(0.0f, 0.1f, 0.0f);
                 PhysicsObjects.push_back(b);
