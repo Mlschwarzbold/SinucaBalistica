@@ -255,7 +255,14 @@ float g_recoilAnim = 0;
 
 glm::vec4 up_vector = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 
+std::list<PhysicsObject> PhysicsObjects;
 
+ float xPlusBound = 2.25f * 0.5f;
+float xMinusBound = 1.72f * -0.5f;
+float zPlusBound = 1.00f * 0.5f;
+float zMinusBound = 1.05f * -0.5f;
+float yPlusBound = 20;
+float yMinusBound = 0.98;
 
 bool w_held, a_held, s_held, d_held, shift_held, ctrl_held = false;
 
@@ -282,6 +289,8 @@ glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t);
 float LERP(float f1, float f2, float t);
 glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t);
 
+
+void resetBalls();
 
 
 // CLASSES
@@ -335,7 +344,7 @@ class PhysicsObject {
 
         
 
-        if(length(movement_vector) > 0.1 /*&& pow(movement_vector.x,2 ) > 0.1f && pow(movement_vector.z, 2) > 0.1f */){
+        if(length(planarize(movement_vector)) > 0.1 /*&& pow(movement_vector.x,2 ) > 0.1f && pow(movement_vector.z, 2) > 0.1f */){
             
             //rotateByAxis(up_vector, 3.14/6);
             glm::vec4 rotation_axis = normalize(crossproduct(up_vector, movement_vector));
@@ -351,7 +360,7 @@ class PhysicsObject {
     
 
     void reflectAxis(char axis){
-        float directional_loss = 0.6;
+        float directional_loss = 0.5;
         if(axis == 'x'){
             movement_vector.x = -movement_vector.x * directional_loss;
             //encacapar(glm::vec4(0.0f,0.0f,0.0f,1.0f));
@@ -707,10 +716,12 @@ int main(int argc, char* argv[])
 //||                                                                 +set   ||
 //==========================================================================||
     float run_time = (float)glfwGetTime();
-    PhysicsObject b1 = PhysicsObject("ball", g_ball_radius, 10.0f, -0.5, 0.0, 1.6);
-    b1.setMovementVector(0.0f, 0.0f, 0.1f);
+
+
+
     
     
+    /*
     PhysicsObject b2 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.0, 0.0, 0.0);
     b2.setMovementVector(0.0f, 0.0f, 0.1f);
 
@@ -727,17 +738,11 @@ int main(int argc, char* argv[])
     b6.setMovementVector(0.0f, 0.0f, 0.1f);
 
     PhysicsObject b7 = PhysicsObject("ball", g_ball_radius, 10.0f, 0.3, 0.0, -0.4);
-    b7.setMovementVector(0.0f, 0.0f, 0.1f);
+    b7.setMovementVector(0.0f, 0.0f, 0.1f); */
     
-    float xPlusBound = 2.25f * 0.5f;
-    float xMinusBound = 1.72f * -0.5f;
-    float zPlusBound = 1.00f * 0.5f;
-    float zMinusBound = 1.05f * -0.5f;
-    float yPlusBound = 20;
-    float yMinusBound = 0.98;
+   
 
-
- 
+    
 
 
     std::list<glm::vec4> Holes;
@@ -758,18 +763,47 @@ int main(int argc, char* argv[])
     float tableZMinus = -2.0f;
 
     
-    std::list<PhysicsObject> PhysicsObjects;
-    PhysicsObjects.push_back(b1);
+    
+    
+    /*
     PhysicsObjects.push_back(b2);
     PhysicsObjects.push_back(b3);
     PhysicsObjects.push_back(b4);
     PhysicsObjects.push_back(b5);
     PhysicsObjects.push_back(b6);
     PhysicsObjects.push_back(b7);
+    */
     
-    
-    PhysicsObject ball = PhysicsObject("ball", 0.2f, 10, 0.3, 0.0, -0.4);
+    //PhysicsObject ball = PhysicsObject("ball", 0.2f, 10, 0.3, 0.0, -0.4);
 
+    //resetBalls(PhysicsObjects, 0.0f, yMinusBound, 0.0f);
+    
+
+
+    float x = -0.3f;
+    float y = yMinusBound;
+    float z = (zPlusBound + zMinusBound) /2;
+    float diameter = g_ball_radius * 2 + 0.01f;
+
+
+    PhysicsObject b1 = PhysicsObject("ball", g_ball_radius, 30.0f, 0.7f, 0.0, z);
+    b1.setMovementVector(0.0f, 0.0f, 0.1f);
+    PhysicsObjects.push_back(b1);
+
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < i; j++){
+
+            PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
+            b.setMovementVector(0.0f, 0.0f, 0.1f);
+            PhysicsObjects.push_back(b);
+            std::cout << "BALLS" << std::endl;
+
+
+            z = z + diameter ;
+        }
+         z = z - (diameter * (i + 0.5f));
+        x = x - diameter * sqrt(3) / 2;
+    }
     /*
     for(int j = 0; j < 8; j++){
         for(int i = 0; i < 8; i++){
@@ -1167,8 +1201,8 @@ int main(int argc, char* argv[])
                 DrawSphere(rayCastPointClosest, 0.03f, 0);
                 glm::vec4 impactVector = -5.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
-                                                                         + 0.4f * impactVector
-                                                                          + 0.6f * ((camera_view_vector)));
+                                                                         + 0.1f * impactVector
+                                                                          + 0.9f * planarize(camera_view_vector));
                 
             }
         } 
@@ -2024,6 +2058,11 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
         g_SpacePressed = false;
     }
 
+    if (key == GLFW_KEY_Y && action == GLFW_RELEASE)
+    {
+        resetBalls();
+    }
+
     // Se o usuário apertar a tecla P, utilizamos projeção perspectiva.
     if (key == GLFW_KEY_P && action == GLFW_PRESS)
     {
@@ -2611,6 +2650,38 @@ glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t
     return f;
 }
 
+
+void resetBalls(){
+
+    float x = -0.3f;
+    float y = yMinusBound;
+    float z = (zPlusBound + zMinusBound) /2;
+    float diameter = g_ball_radius * 2 + 0.01f;
+    
+
+    PhysicsObjects.clear();
+    global_Object_Index = 0;
+
+    PhysicsObject b1 = PhysicsObject("ball", g_ball_radius, 30.0f, 0.7f, 0.0, z);
+    b1.setMovementVector(0.0f, 0.0f, 0.1f);
+    PhysicsObjects.push_back(b1);
+
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < i; j++){
+
+            PhysicsObject b = PhysicsObject("ball", g_ball_radius, 30.0f, x, y, z);
+            b.setMovementVector(0.0f, 0.0f, 0.1f);
+            PhysicsObjects.push_back(b);
+            std::cout << "BALLS" << std::endl;
+
+
+            z = z + diameter ;
+        }
+         z = z - (diameter * (i + 0.5f));
+        x = x - diameter * sqrt(3) / 2;
+    }
+
+}
 
 
 // set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
