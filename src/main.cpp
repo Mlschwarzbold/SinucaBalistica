@@ -269,13 +269,15 @@ float zMinusBound = 1.05f * -0.5f;
 float yPlusBound = 20;
 float yMinusBound = 0.98;
 
-glm::vec4 player_dim =      glm::vec4(0.2f, 1.75f, 0.2f, 0.0f);
-glm::vec4 table_coords =    glm::vec4((xPlusBound + xMinusBound)/2, 0.0f, (zPlusBound + zMinusBound)/2 + -0.15f, 1.0f);
-glm::vec4 table_dim =       glm::vec4(xPlusBound, 1.0f, zPlusBound + 0.15f, 0.0f);
+glm::vec4 player_dim =      glm::vec4(0.1f, 1.75f, 0.1f, 0.0f);
+glm::vec4 table_coords =    glm::vec4((xPlusBound + xMinusBound)/2, 0.0f, (zPlusBound + zMinusBound)/2, 1.0f);
+glm::vec4 table_dim =       glm::vec4(xPlusBound, 1.0f, zPlusBound + 0.0f, 0.0f);
 
 bool w_held, a_held, s_held, d_held, shift_held, ctrl_held = false;
 
 float walk_speed = 2.0f;
+bool opening_shot = true;
+float opening_multiplier = 5.0f;
 
 //New functions
 
@@ -299,6 +301,7 @@ glm::vec4 planarize(glm::vec4 v);
 glm::vec4 LERP(glm::vec4 p1, glm::vec4 p2, float t);
 float LERP(float f1, float f2, float t);
 glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t);
+float Bezier(float f1, float f2, float f3, float f4, float t);
 
 
 void resetBalls();
@@ -608,7 +611,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "INF01047 - Sinuca Balistica", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "Sinuca Balistica", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -632,6 +635,10 @@ int main(int argc, char* argv[])
     // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
     // biblioteca GLAD.
     gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+
+    // Hides cursor -> doesnt work for some reason
+    glfwGetInputMode(window, GLFW_CURSOR_DISABLED);
 
     // Definimos a função de callback que será chamada sempre que a janela for
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
@@ -879,6 +886,8 @@ int main(int argc, char* argv[])
         float delta_t = (float)glfwGetTime() - run_time;
         run_time = (float)glfwGetTime();
 
+        
+
         global_Text_Line = 2;
         // Aqui executamos as operações de renderização
 
@@ -889,6 +898,8 @@ int main(int argc, char* argv[])
         //
         //           R     G     B     A
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+       
 
         // "Pintamos" todos os pixels do framebuffer com a cor definida acima,
         // e também resetamos todos os pixels do Z-buffer (depth buffer).
@@ -924,13 +935,13 @@ int main(int argc, char* argv[])
 
         if(g_RightMouseButtonPressed){
             if(g_zoomAnim < 1){
-                g_zoomAnim = g_zoomAnim + delta_t;
+                g_zoomAnim = g_zoomAnim + delta_t * 3;
             } else {
                 g_zoomAnim = 1;
             }
         } else {
             if(g_zoomAnim > 0){
-                g_zoomAnim = g_zoomAnim - delta_t;
+                g_zoomAnim = g_zoomAnim - delta_t * 3;
             } else {
                 g_zoomAnim = 0;
             }
@@ -1009,7 +1020,7 @@ int main(int argc, char* argv[])
             }
 
 
-        bool isCollidingWithTable = collision_box_box(g_POV_Coords, player_dim, table_coords, table_dim);
+        bool isCollidingWithTable = collision_box_box(g_POV_Coords, table_coords, player_dim, table_dim);
 
         
         // top 10 worst code ever
@@ -1136,6 +1147,21 @@ int main(int argc, char* argv[])
         DrawVirtualObject("group_7_ID91");
         DrawVirtualObject("group_8_ID104");
 
+        // Desenhamos o plano do chão
+        model = Matrix_Translate(g_POV_Coords.x, g_POV_Coords.y, g_POV_Coords.z)
+        * Matrix_Rotate_X(0.0f)
+        * Matrix_Rotate_Y(g_free_CameraTheta + (3.14))
+        * Matrix_Rotate_Z(g_free_CameraPhi + -LERP(0, (3.14 / LERP(5, 20, g_zoomAnim)) ,g_recoilAnim))
+        * Matrix_Translate(
+        LERP(-0.15f, -0.3f, g_zoomAnim),
+        LERP(-0.2f, -0.18f, g_zoomAnim),
+        LERP(-0.1f, 0.0f, g_zoomAnim))
+        
+        * Matrix_Scale(0.01f, 0.01f, 0.01f);
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(g_object_id_uniform, GUN);
+        DrawVirtualObject("P88");
+
 
 
         //
@@ -1248,16 +1274,7 @@ int main(int argc, char* argv[])
         }
         */
 
-       // Desenhamos o plano do chão
-        model = Matrix_Translate(g_POV_Coords.x, g_POV_Coords.y, g_POV_Coords.z)
-        * Matrix_Rotate_X(0.0f)
-        * Matrix_Rotate_Y(g_free_CameraTheta + (3.14))
-        * Matrix_Rotate_Z(g_free_CameraPhi + -LERP(0, (3.14 / 5),g_recoilAnim))
-        * Matrix_Translate(-0.15f,-0.2f,0.-0.1f)
-        * Matrix_Scale(0.01f, 0.01f, 0.01f);
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-        glUniform1i(g_object_id_uniform, GUN);
-        DrawVirtualObject("P88");
+       
 
         if(g_recoilAnim > 0){
             g_recoilAnim = g_recoilAnim - 3 * delta_t;
@@ -1314,9 +1331,17 @@ int main(int argc, char* argv[])
                 printf("Max dist inside if: %f\n", min_dist);
                 DrawSphere(rayCastPointClosest, 0.03f, 0);
                 glm::vec4 impactVector = -5.0f * normalize(rayCastPointClosest - rayCastSelectedObjectPointer->position);
+                float multiplier;
+                if(opening_shot){
+                    multiplier = opening_multiplier;
+                    opening_shot = false;
+                } else {
+                    multiplier = 1.0f;
+                }
+
                 rayCastSelectedObjectPointer->movement_vector = (0.5f * rayCastSelectedObjectPointer->movement_vector
                                                                          + 0.1f * impactVector
-                                                                          + 0.9f * planarize(camera_view_vector));
+                                                                          + 0.9f * planarize(camera_view_vector) * multiplier);
 
 
                 ma_sound_stop(&clack_sound);
@@ -2039,9 +2064,10 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
     float phimax = 3.141592f/2;
     float phimin = -phimax;
+    float zoom_vision_slowdown = Bezier(1, 1, 0.3,  0.3, g_zoomAnim);
     if (!g_FreeCamera)
     {
-        float zoom_vision_slowdown = Bezier(1, 1, 0.3,  0.3, g_zoomAnim);
+        
         // Atualizamos parâmetros da câmera com os deslocamentos
         g_CameraTheta -= 0.01f*dx * zoom_vision_slowdown;
         g_CameraPhi   += 0.01f*dy * zoom_vision_slowdown;
@@ -2057,8 +2083,8 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 
     
         // Atualizamos parâmetros da câmera com os deslocamentos
-        g_free_CameraTheta -= 0.01f*dx;
-        g_free_CameraPhi   += 0.01f*dy;
+        g_free_CameraTheta -= 0.01f*dx * zoom_vision_slowdown;
+        g_free_CameraPhi   += 0.01f*dy * zoom_vision_slowdown;
     
         if (g_free_CameraPhi > phimax)
             g_free_CameraPhi = phimax;
@@ -2105,6 +2131,8 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         g_LastCursorPosX = xpos;
         g_LastCursorPosY = ypos;
     }
+
+    
 }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
@@ -2775,6 +2803,20 @@ glm::vec4 Bezier(glm::vec4 p1, glm::vec4 p2, glm::vec4 p3, glm::vec4 p4, float t
     glm::vec4 e = LERP(b, c, t);
 
     glm::vec4 f = LERP(d, e, t);
+
+    return f;
+} 
+
+float Bezier(float f1, float f2, float f3, float f4, float t){
+
+    float a = LERP(f1, f2, t);
+    float b = LERP(f2, f3, t);
+    float c = LERP(f3, f4, t);
+
+    float d = LERP(a, b, t);
+    float e = LERP(b, c, t);
+
+    float f = LERP(d, e, t);
 
     return f;
 } 
