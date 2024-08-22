@@ -869,6 +869,24 @@ int main(int argc, char* argv[])
                 g_POV_Coords = g_POV_Coords - camera_side_vector_normalized * walk_speed * zoom_slowdown * delta_t;
                 }
         }
+
+
+
+        if(g_POV_Coords.x > 4.8f){
+            g_POV_Coords.x = 4.8f;
+        }
+
+        if(g_POV_Coords.x < -4.8f){
+            g_POV_Coords.x = -4.8f;
+        }
+
+        if(g_POV_Coords.z > 4.2f){
+            g_POV_Coords.z = 4.2f;
+        }
+
+        if(g_POV_Coords.z < -5.0f){
+            g_POV_Coords.z = -5.0f;
+        }
         
         
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
