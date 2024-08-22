@@ -490,31 +490,6 @@ class PhysicsObject {
 };
 
 
-class Rect {       
-  public:             
-    float x;
-    float z;   
-    float x_width;
-    float z_width;
-
-    Rect(float x, float z, float x_width, float z_width) { // Constructor with parameters
-        x = x;
-        z = z;
-        x_width = x_width;
-        z_width = z_width;
-
-    }
-
-    glm::vec4 toFirstPerson(){
-        return glm::vec4(x, 1.0f, z, 1.0f);
-    }
-};
-
-
-Rect playerRect = Rect(-3.0f, 0.0f, 0.3f, 0.3f);
-Rect tableRect = Rect(0.0f, 0.0f, 2.0f, 2.0f);
-
-
 int main(int argc, char* argv[])
 {
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
