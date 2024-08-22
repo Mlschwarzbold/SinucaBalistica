@@ -1,6 +1,6 @@
 # SinucaBalistica
 
-Sinuca Balística
+
 
 ![image](https://github.com/user-attachments/assets/c23f7924-431f-457d-8458-bf1335ff10e8)
 
@@ -59,11 +59,13 @@ Tutorial para o uso do programa:
   Objetivos:
       O jogo é de estilo sandbox, então não tem um objetivo fixo. Como sugestão, uma variação da sinuca para um jogador pode ser feita tentando encaçapar todas as bolinas somente atirando na bolinha branca. Adicionalmente, pode-se estipular que a bola preta deve ser a última a ser encaçapada.
 
+
+Demonstração:
+        https://youtu.be/lF1eAq9VZVc
     
 
-    ![image](https://github.com/user-attachments/assets/93ec7969-d1d6-4fc9-8d39-8f44d21dbae3)
-
-    ![image](https://github.com/user-attachments/assets/98a8719b-b5bb-4562-98f7-119c3d0c0900)
+![image](https://github.com/user-attachments/assets/93ec7969-d1d6-4fc9-8d39-8f44d21dbae3)
+![image](https://github.com/user-attachments/assets/98a8719b-b5bb-4562-98f7-119c3d0c0900)
 
 
   
